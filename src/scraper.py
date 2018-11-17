@@ -34,9 +34,7 @@ def scrap_league_and_div_data(link, delay=0):
     for k, v in divlinks_list.items():
         # passing proxies to scrap methode and getting the new proxieslist (removed slow proxies)
         teamlinks_list, socks5list, used_proxy = scrap.get_teamlinks_dic_from_group(v['link'], socks5list)
-        if len(socks5list) < 2:
-            print('Proxylist almost empty. Scraping new Proxies')
-            socks5list = scrapProxylistSpys_one.scrape_DACH_close_countries_and_get_only_proxies_list()
+
         counter += 1
         league_team_data[k].update({'Teams': teamlinks_list})
         # prints number, divname and used proxy ip without port
@@ -85,10 +83,6 @@ def add_teamdata_to_data(delay=10):
             # passing proxies to scrap methode and getting the new proxieslist (removed slow proxies)
             players, socks5list, used_proxy = scrap.get_teamdic_from_teamlink(vs['link'], socks5list)
 
-            #if almost all proxies got removed, scrape new proxies with more countrys
-            if len(socks5list) < 2:
-                print('Proxylist almost empty. Scraping new Proxies')
-                socks5list = scrapProxylistSpys_one.scrape_DACH_close_countries_and_get_only_proxies_list()
 
             # print(ks + ' sleeping...(' + str(delay) + ')' + '')
             print('(%s/%s) %s - %s' %
