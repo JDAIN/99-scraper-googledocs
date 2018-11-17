@@ -31,9 +31,16 @@ def scrap_league_and_div_data(link, delay=0):
     print('Scraping DACH socks5 Proxies from spys.one')
     # scraping proxies from spys.one
     socks5list = scrapProxylistSpys_one.scrape_DACH_D_and_get_only_proxies_list()
+    used_proxy = ''
+    l_proxy_counter = 0
     for k, v in divlinks_list.items():
+        l_proxy_counter +=1
+        if l_proxy_counter == 20:
+            used_proxy = ''
+            l_proxy_counter = 0
+
         # passing proxies to scrap methode and getting the new proxieslist (removed slow proxies)
-        teamlinks_list, socks5list, used_proxy = scrap.get_teamlinks_dic_from_group(v['link'], socks5list)
+        teamlinks_list, socks5list, used_proxy = scrap.get_teamlinks_dic_from_group(v['link'], socks5list,used_proxy)
 
         counter += 1
         league_team_data[k].update({'Teams': teamlinks_list})

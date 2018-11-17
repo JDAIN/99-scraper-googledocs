@@ -33,7 +33,7 @@ def get_divlinks_dic_from_leaguepage(link):
     return divlinks_dic
 
 
-def get_teamlinks_dic_from_group(grouplink, proxy_list):
+def get_teamlinks_dic_from_group(grouplink, proxy_list,l_proxy):
     '''
     Gets all Teamlinks from a Group.
     Action  is mapped to Button 'Scrap League'
@@ -49,8 +49,10 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list):
     # use proxies to connect
     proxl = proxy_list
     website = None
+    http= ''
     while website is None:
         try:
+            #logging.warning(l_proxy)
             if l_proxy:
                 # print('connect')
                 #http = random.choice(proxl)
@@ -60,8 +62,9 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list):
                     'https': 'socks5://' + l_proxy
                 }
 
-                website = requests.get(url, headers=headers, proxies=proxies, timeout=2)
+                website = requests.get(url, headers=headers, proxies=proxies, timeout=1)
                 website.raise_for_status()
+                http=l_proxy
             else:
                 http = random.choice(proxl)
                 logging.warning(proxl)
@@ -78,7 +81,8 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list):
                 print('Proxylist almost empty. Scraping new Proxies')
                 proxl = scrapProxylistSpys_one.scrape_DACH_close_countries_and_get_only_proxies_list()
             else:
-                proxl.remove(http)
+                if http in proxl:
+                    proxl.remove(http)
             # print(website)
             pass
     # get html
