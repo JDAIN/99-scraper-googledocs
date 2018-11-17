@@ -84,12 +84,20 @@ def add_teamdata_to_data(delay=10):
     print('Scraping DACH socks5 Proxies from spys.one')
     # scraping proxies from spys.one
     socks5list = scrapProxylistSpys_one.scrape_DACH_D_and_get_only_proxies_list()
+    used_proxy = ''
+    l_proxy_counter = 0
     for k, v in teamdata.items():
         print('scraping %s...' % k)
         for ks, vs in teamdata[k]['Teams'].items():
+            l_proxy_counter +=1
+            # user: change value, for faster or slower proxyswitch, if proxy was fast enough, recommended:20
+            if l_proxy_counter == 20:
+                used_proxy = ''
+                l_proxy_counter = 0
+
             counter += 1
             # passing proxies to scrap methode and getting the new proxieslist (removed slow proxies)
-            players, socks5list, used_proxy = scrap.get_teamdic_from_teamlink(vs['link'], socks5list)
+            players, socks5list, used_proxy = scrap.get_teamdic_from_teamlink(vs['link'], socks5list, used_proxy)
 
             # print(ks + ' sleeping...(' + str(delay) + ')' + '')
             print('(%s/%s) %s - %s' %

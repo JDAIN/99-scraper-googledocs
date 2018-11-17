@@ -91,19 +91,19 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list, l_proxy):
                     'http': 'socks5://' + l_proxy,
                     'https': 'socks5://' + l_proxy
                 }
-                # user: change timeout for fast or slower proxy timeout recommended 2-3
-                website = requests.get(url, headers=headers, proxies=proxies, timeout=1)
+                # user: change timeout for fast or slower proxy, timeout recommended 2-3
+                website = requests.get(url, headers=headers, proxies=proxies, timeout=2)
                 website.raise_for_status()
                 # TODO remove l_proxy var and replace with http
                 http = l_proxy
             else:
                 http = random.choice(proxl)
-                logging.warning(proxl)
+                logging.warning(http)
                 proxies = {
                     'http': 'socks5://' + http,
                     'https': 'socks5://' + http
                 }
-
+                # user: change timeout for fast or slower proxy, timeout recommended 2-3
                 website = requests.get(url, headers=headers, proxies=proxies, timeout=2)
                 website.raise_for_status()
 
@@ -132,7 +132,7 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list, l_proxy):
     return teamlinks_dic, new_proxies, http
 
 
-def get_teamdic_from_teamlink(link, proxy_list):
+def get_teamdic_from_teamlink(link, proxy_list,l_proxy):
     '''
     Gets all Player/Teaminfo from a Teamlink
     Action  is mapped to Button 'Add Players'
@@ -153,20 +153,33 @@ def get_teamdic_from_teamlink(link, proxy_list):
     url = link
     headers = {
         'User-Agent': generate_user_agent(device_type=("desktop", "smartphone"))}
+    # use proxies to connect
     proxl = proxy_list
 
     website = None
+    http = ''
     while website is None:
         try:
-            # print('connect')
-            http = random.choice(proxl)
-            logging.warning(proxl)
-            proxies = {
-                'http': 'socks5://' + http,
-                'https': 'socks5://' + http
-            }
-            website = requests.get(url, headers=headers, proxies=proxies, timeout=2)
-            website.raise_for_status()
+            if l_proxy:
+                logging.warning(proxl)
+                proxies = {
+                    'http': 'socks5://' + l_proxy,
+                    'https': 'socks5://' + l_proxy
+                }
+                website = requests.get(url, headers=headers, proxies=proxies, timeout=2)
+                website.raise_for_status()
+                # TODO remove l_proxy var and replace with http
+                http = l_proxy
+            else:
+                # print('connect')
+                http = random.choice(proxl)
+                logging.warning('tried: ' +str(http))
+                proxies = {
+                    'http': 'socks5://' + http,
+                    'https': 'socks5://' + http
+                }
+                website = requests.get(url, headers=headers, proxies=proxies, timeout=2)
+                website.raise_for_status()
         except:
             # if almost all proxies got removed, scrape new proxies with more countrys
             if len(proxl) < 2:
@@ -174,7 +187,8 @@ def get_teamdic_from_teamlink(link, proxy_list):
                 proxl = scrapProxylistSpys_one.scrape_DACH_close_countries_and_get_only_proxies_list()
 
             else:
-                proxl.remove(http)
+                if http in proxl:
+                    proxl.remove(http)
             pass
 
     # get html
