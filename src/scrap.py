@@ -11,6 +11,11 @@ import scrapProxylistSpys_one
 
 
 def get_divlinks_dic_from_leaguepage(link):
+    '''
+    Gets run first. Gets all Division links.
+    :param link: 99Damage Season link
+    :return: Dic with all Divisions and links.
+    '''
     # connect
     url = link
     headers = {
@@ -33,7 +38,32 @@ def get_divlinks_dic_from_leaguepage(link):
     return divlinks_dic
 
 
-def get_teamlinks_dic_from_group(grouplink, proxy_list,l_proxy):
+def teamdic_change_datestrings_to_timedate_objects(dic):
+    '''
+    Changes in a Teamdic the string Date to Datetime obejects for comparision
+    :param dic: only a Teamdic
+    :return: Teamdic with Datetime obejects
+    '''
+    # creates new list and replaces the datestring with an datetimeobject
+    date_team_dic = copy.deepcopy(dic)
+
+    for key in date_team_dic.keys():
+        counterjoin = 0
+        counterleave = 0
+        for i in date_team_dic[key]['join_dates']:
+            date_team_dic[key]['join_dates'][counterjoin] = datetime.strptime(
+                i, '%a, %d %b %Y %H:%M:%S %z')
+            counterjoin += 1
+
+        for i in date_team_dic[key]['leave_dates']:
+            date_team_dic[key]['leave_dates'][counterleave] = datetime.strptime(
+                i, '%a, %d %b %Y %H:%M:%S %z')
+            counterleave += 1
+    # pretty.pprint(date_team_dic)
+    return date_team_dic
+
+
+def get_teamlinks_dic_from_group(grouplink, proxy_list, l_proxy):
     '''
     Gets all Teamlinks from a Group.
     Action  is mapped to Button 'Scrap League'
@@ -49,22 +79,23 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list,l_proxy):
     # use proxies to connect
     proxl = proxy_list
     website = None
-    http= ''
+    http = ''
     while website is None:
         try:
-            #logging.warning(l_proxy)
+            # logging.warning(l_proxy)
             if l_proxy:
                 # print('connect')
-                #http = random.choice(proxl)
+                # http = random.choice(proxl)
                 logging.warning(proxl)
                 proxies = {
                     'http': 'socks5://' + l_proxy,
                     'https': 'socks5://' + l_proxy
                 }
-
+                # user: change timeout for fast or slower proxy timeout recommended 2-3
                 website = requests.get(url, headers=headers, proxies=proxies, timeout=1)
                 website.raise_for_status()
-                http=l_proxy
+                # TODO remove l_proxy var and replace with http
+                http = l_proxy
             else:
                 http = random.choice(proxl)
                 logging.warning(proxl)
@@ -101,35 +132,20 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list,l_proxy):
     return teamlinks_dic, new_proxies, http
 
 
-def teamdic_change_datestrings_to_timedate_objects(dic):
-    '''
-    Enter only a teamdic
-    param dic
-    '''
-    # creates new list and replaces the datestring with an datetimeobject
-    date_team_dic = copy.deepcopy(dic)
-
-    for key in date_team_dic.keys():
-        counterjoin = 0
-        counterleave = 0
-        for i in date_team_dic[key]['join_dates']:
-            date_team_dic[key]['join_dates'][counterjoin] = datetime.strptime(
-                i, '%a, %d %b %Y %H:%M:%S %z')
-            counterjoin += 1
-
-        for i in date_team_dic[key]['leave_dates']:
-            date_team_dic[key]['leave_dates'][counterleave] = datetime.strptime(
-                i, '%a, %d %b %Y %H:%M:%S %z')
-            counterleave += 1
-    # pretty.pprint(date_team_dic)
-    return date_team_dic
-
-
 def get_teamdic_from_teamlink(link, proxy_list):
+    '''
+    Gets all Player/Teaminfo from a Teamlink
+    Action  is mapped to Button 'Add Players'
+    :param link: Teamlink
+    :param proxy_list: Proxylist used for Scraping
+    :return: team_dic in Form
+            {'steam_id': player_steamid, 'join_dates': [], 'leave_dates': [], 'time_in_team': '', 'join_afterSeasonStart': '-', 'leave_afterSeasonStart': '-'}
+    '''
     # enter when the 99dmg season starts, used to check if player was in the team at season start
     # season10 start: https://csgo.99damage.de/de/news/74090-jetzt-anmelden-fuer-die-99damage-liga
     # 99dmg season 10 started at 28. September 2018 (18: 00 Uhr)
     # use as input               28.09.2018 18:00 +0200
+
     # IMPORTANT TODO change for next season
     dmgseasonstart_datetime = datetime.strptime(
         '28.09.2018 18:00 +0200', '%d.%m.%Y %H:%M %z')
