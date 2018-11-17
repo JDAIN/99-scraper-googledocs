@@ -86,25 +86,32 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list, l_proxy):
             if l_proxy:
                 # print('connect')
                 # http = random.choice(proxl)
-                logging.warning(proxl)
+                #logging.warning(proxl)
                 proxies = {
                     'http': 'socks5://' + l_proxy,
                     'https': 'socks5://' + l_proxy
                 }
+                # TODO remove l_proxy var and replace with http
+
+                http = l_proxy
+                logging.warning('used:' + str(l_proxy))
                 # user: change timeout for fast or slower proxy, timeout recommended 2-3
                 website = requests.get(url, headers=headers, proxies=proxies, timeout=2)
+
+                logging.warning(website.status_code)
                 website.raise_for_status()
-                # TODO remove l_proxy var and replace with http
-                http = l_proxy
+
             else:
                 http = random.choice(proxl)
-                logging.warning(http)
+                logging.warning('tried: ' + str(http))
+                #logging.warning(http)
                 proxies = {
                     'http': 'socks5://' + http,
                     'https': 'socks5://' + http
                 }
                 # user: change timeout for fast or slower proxy, timeout recommended 2-3
                 website = requests.get(url, headers=headers, proxies=proxies, timeout=2)
+
                 website.raise_for_status()
 
         except:
@@ -161,15 +168,20 @@ def get_teamdic_from_teamlink(link, proxy_list,l_proxy):
     while website is None:
         try:
             if l_proxy:
-                logging.warning(proxl)
+                #logging.warning(proxl)
+                logging.warning('used:' + str(l_proxy))
                 proxies = {
                     'http': 'socks5://' + l_proxy,
                     'https': 'socks5://' + l_proxy
                 }
-                website = requests.get(url, headers=headers, proxies=proxies, timeout=2)
-                website.raise_for_status()
-                # TODO remove l_proxy var and replace with http
                 http = l_proxy
+                website = requests.get(url, headers=headers, proxies=proxies, timeout=2)
+
+                logging.warning(website.status_code)
+                website.raise_for_status()
+                #logging.warning('no raise')
+                # TODO remove l_proxy var and replace with http
+
             else:
                 # print('connect')
                 http = random.choice(proxl)

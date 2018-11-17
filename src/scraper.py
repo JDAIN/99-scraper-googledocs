@@ -109,3 +109,5 @@ def add_teamdata_to_data(delay=10):
         with io.open('team_player_data.json', 'w', encoding="utf-8") as file:
             json.dump(teamdata, file, indent=4)
             print('wrote Data of %s to File' % k)
+
+    print('Done')
