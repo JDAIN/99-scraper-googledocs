@@ -175,7 +175,7 @@ class color:
     END = '\033[0m'
 
 
-def readable_check_lower_div_join():
+def readable_check_lower_div_join_color():
     read_dic = check_lower_div_join()
     print(len(read_dic))
     for player_entry in read_dic:
@@ -196,10 +196,38 @@ def readable_check_lower_div_join():
 
             if p == 0 and player_entry[0][-2] != '-':
                 print('%saktuelles Team:%s %s %s(%s)%s join: %s %s' % (color.BOLD, color.END,
-                    player_entry[p][2],color.YELLOW, player_entry[p][1],color.END, player_entry[p][3], player_entry[p][-3]))
+                                                                       player_entry[p][2], color.YELLOW, player_entry[p][1], color.END, player_entry[p][3], player_entry[p][-3]))
             else:
                 print('%svorheriges Team:%s %s %s(%s)%s leave: %s %s' % (color.BOLD, color.END,
-                    player_entry[p][2],color.RED, player_entry[p][1], color.END, player_entry[p][4], player_entry[p][-3]))
+                                                                         player_entry[p][2], color.RED, player_entry[p][1], color.END, player_entry[p][4], player_entry[p][-3]))
+        print("_________________________")
+
+
+def readable_check_lower_div_join():
+    read_dic = check_lower_div_join()
+    print(len(read_dic))
+    for player_entry in read_dic:
+
+        # green+bold + name of player
+        print('%s' % (str(player_entry[0][0])))
+        if player_entry[0][-2] != '-':
+            # steam_id if active
+            print(player_entry[0][-2])
+        else:
+            # player is inactive '-'
+            print('-- (inactive)')
+        # else:
+        # return
+
+        for p in range(len(player_entry)):
+            # if player_entry[0][-2] != '-':
+
+            if p == 0 and player_entry[0][-2] != '-':
+                print('aktuelles Team: %s (%s) join: %s %s' % (
+                    player_entry[p][2],  player_entry[p][1], player_entry[p][3], player_entry[p][-3]))
+            else:
+                print('vorheriges Team: %s (%s) leave: %s %s' % (
+                    player_entry[p][2],  player_entry[p][1],  player_entry[p][4], player_entry[p][-3]))
         print("_________________________")
 
 
@@ -228,14 +256,13 @@ def readable99_check_lower_div_join():
 
 
 if __name__ == '__main__':
-    # check_lower_div_join()
-    # print('''Rule: D. I.
-    #          Das Wechseln des Teams während einer laufenden Saison ist nur ein Mal erlaubt.
-    #          Mehrfacher Wechsel führt zur Sperrung des Spielers für die laufende Saison und Playoffs bzw.Relegationen.\n\n\n''')
-    #
-    # check_if_switched_team_more_than_once()
+    print('''Rule: D. I.
+             Das Wechseln des Teams während einer laufenden Saison ist nur ein Mal erlaubt.
+             Mehrfacher Wechsel führt zur Sperrung des Spielers für die laufende Saison und Playoffs bzw.Relegationen.\n\n\n''')
 
-    # print('\n\n____________________________________________________________\n\nSpieler, die zu Beginn oder im Laufe einer jeden Saison in einem Team einer höheren Division vertreten waren, sind in einer niedrigeren Division nicht spielberechtigt.\n\n')
+    check_if_switched_team_more_than_once()
+
+    print('\n\n____________________________________________________________\n\nSpieler, die zu Beginn oder im Laufe einer jeden Saison in einem Team einer höheren Division vertreten waren, sind in einer niedrigeren Division nicht spielberechtigt.\n')
     readable_check_lower_div_join()
-    # pprint.pprint(check_lower_div_join())
-    # input('Press Any Key to close...')
+
+    input('Press Any Key to close...')
