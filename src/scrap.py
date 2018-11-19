@@ -86,7 +86,7 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list, l_proxy):
             if l_proxy:
                 # print('connect')
                 # http = random.choice(proxl)
-                #logging.warning(proxl)
+                # logging.warning(proxl)
                 proxies = {
                     'http': 'socks5://' + l_proxy,
                     'https': 'socks5://' + l_proxy
@@ -104,7 +104,7 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list, l_proxy):
             else:
                 http = random.choice(proxl)
                 logging.warning('tried: ' + str(http))
-                #logging.warning(http)
+                # logging.warning(http)
                 proxies = {
                     'http': 'socks5://' + http,
                     'https': 'socks5://' + http
@@ -139,10 +139,11 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list, l_proxy):
     return teamlinks_dic, new_proxies, http
 
 
-def get_teamdic_from_teamlink(link, proxy_list,l_proxy):
+def get_teamdic_from_teamlink(link, proxy_list, l_proxy):
     '''
     Gets all Player/Teaminfo from a Teamlink
     Action  is mapped to Button 'Add Players'
+    :param l_proxy: last proxy used for multiple uses of proxy
     :param link: Teamlink
     :param proxy_list: Proxylist used for Scraping
     :return: team_dic in Form
@@ -168,7 +169,7 @@ def get_teamdic_from_teamlink(link, proxy_list,l_proxy):
     while website is None:
         try:
             if l_proxy:
-                #logging.warning(proxl)
+                # logging.warning(proxl)
                 logging.warning('used:' + str(l_proxy))
                 proxies = {
                     'http': 'socks5://' + l_proxy,
@@ -179,13 +180,13 @@ def get_teamdic_from_teamlink(link, proxy_list,l_proxy):
 
                 logging.warning(website.status_code)
                 website.raise_for_status()
-                #logging.warning('no raise')
+                # logging.warning('no raise')
                 # TODO remove l_proxy var and replace with http
 
             else:
                 # print('connect')
                 http = random.choice(proxl)
-                logging.warning('tried: ' +str(http))
+                logging.warning('tried: ' + str(http))
                 proxies = {
                     'http': 'socks5://' + http,
                     'https': 'socks5://' + http
@@ -251,7 +252,22 @@ def get_teamdic_from_teamlink(link, proxy_list,l_proxy):
 
     datetime_team_dic = teamdic_change_datestrings_to_timedate_objects(
         team_dic)
+    # key playername
+    last_join_date = ''
+    last_leave_date = ''
     for key in datetime_team_dic.keys():
+        #last_join_date = datetime_team_dic[key]['join_dates'][0]
+        #more join dates than leavedates means he is still in the team
+        if len(datetime_team_dic[key]['join_dates']) > len(datetime_team_dic[key]['leave_dates']):
+            team_dic[key]['time_in_team'] = 'active'
+            pass #still in team
+        else:
+            last_join_date = datetime_team_dic[key]['join_dates'][0]
+            last_leave_date = datetime_team_dic[key]['leave_dates'][0]
+            timeteam = last_leave_date - last_join_date
+            team_dic[key]['time_in_team'] = timeteam
+
+
         for date in datetime_team_dic[key]['join_dates']:
             if date > dmgseasonstart_datetime:
                 team_dic[key]['join_afterSeasonStart'] = True
@@ -269,9 +285,10 @@ def get_teamdic_from_teamlink(link, proxy_list,l_proxy):
         active_team_playernames = active_team_table[0::3]
         active_team_steamids = active_team_table[2::3]
         for i in range(len(active_team_playernames)):
-            if '[log]' in active_team_steamids[i]:
+            # filters out old steamids, remove part, if you want [Log]
+            if '[log]' in active_team_steamids[i].text:
                 team_dic[active_team_playernames[i].text]['steam_id'] = active_team_steamids[i].text.split('[', 1)[
-                    0]
+                                                                            0][:-1]
             else:
                 team_dic[active_team_playernames[i].text]['steam_id'] = active_team_steamids[i].text
     except:
@@ -281,3 +298,10 @@ def get_teamdic_from_teamlink(link, proxy_list,l_proxy):
         return 'no players, team deleted', new_proxies, http
     else:
         return team_dic, new_proxies, http
+
+
+proxies = ['78.94.172.42:1080', '213.71.139.113:1080', '176.94.2.84:1080', '5.230.148.18:8082', '178.128.200.165:1080',
+           '142.93.107.176:1080']
+l = get_teamdic_from_teamlink('https://csgo.99damage.de/de/leagues/teams/24311-allet-overdriven', proxies,
+                              '78.94.172.42:1080')
+print(l[0])
