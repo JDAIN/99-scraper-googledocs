@@ -77,10 +77,10 @@ def add_teamdata_to_data(delay=10):
         return
 
     counter = 0
-    estTeams = len(teamdata.keys()) * 8
-    est_time_min = round((estTeams * 1.3) / 60)
+    est_teams = len(teamdata.keys()) * 8
+    est_time_min = round((est_teams * 1.3) / 60)
     print('Estimated Teams: %s  Estimated time: %s Minutes (Delay %ss)' %
-          (str(estTeams), str(est_time_min), str(delay)))
+          (str(est_teams), str(est_time_min), str(delay)))
     print('Scraping DACH socks5 Proxies from spys.one')
     # scraping proxies from spys.one
     socks5list = scrapProxylistSpys_one.scrape_DACH_D_and_get_only_proxies_list()
@@ -89,7 +89,7 @@ def add_teamdata_to_data(delay=10):
     for k, v in teamdata.items():
         print('scraping %s...' % k)
         for ks, vs in teamdata[k]['Teams'].items():
-            l_proxy_counter +=1
+            l_proxy_counter += 1
             # user: change value, for faster or slower proxyswitch, if proxy was fast enough, recommended:20
             if l_proxy_counter == 20:
                 used_proxy = ''
@@ -101,7 +101,7 @@ def add_teamdata_to_data(delay=10):
 
             # print(ks + ' sleeping...(' + str(delay) + ')' + '')
             print('(%s/%s) %s - %s' %
-                  (str(counter), str(estTeams), ks, str(used_proxy.split(':')[0])))
+                  (str(counter), str(est_teams), ks, str(used_proxy.split(':')[0])))
             # time.sleep(delay)
             teamdata[k]['Teams'][ks].update({'Players': players})
         # after every division write to file,slower can be moved out of for for speed improvment but less stability
@@ -111,3 +111,4 @@ def add_teamdata_to_data(delay=10):
             print('wrote Data of %s to File' % k)
 
     print('Done')
+

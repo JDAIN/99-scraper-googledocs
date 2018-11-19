@@ -5,7 +5,6 @@ import requests
 import bs4
 import copy
 from datetime import datetime
-import pprint
 from user_agent import generate_user_agent
 import scrapProxylistSpys_one
 
@@ -234,40 +233,38 @@ def get_teamdic_from_teamlink(link, proxy_list, l_proxy):
         if (teamlog_action == 'member_join' or teamlog_action == 'create') and teamlog_playername:
             team_dic[teamlog_playername]['join_dates'].append(
                 join_leave_date_string)
-        if (teamlog_action == 'member_leave'):
+        if teamlog_action == 'member_leave':
             if ('(admin)' not in teamlog_playername) and teamlog_playername:
                 team_dic[teamlog_playername]['leave_dates'].append(
                     join_leave_date_string)
             elif '(admin)' in teamlog_playername and teamlog_target:
                 team_dic[teamlog_target]['leave_dates'].append(
                     join_leave_date_string)
-        if (teamlog_action == 'member_kick'):
+        if teamlog_action == 'member_kick':
             if teamlog_target:
                 team_dic[teamlog_target]['leave_dates'].append(
                     join_leave_date_string)
-        if (teamlog_action == 'member_add'):
+        if teamlog_action == 'member_add':
             if teamlog_target:
                 team_dic[teamlog_target]['join_dates'].append(
                     join_leave_date_string)
 
     datetime_team_dic = teamdic_change_datestrings_to_timedate_objects(
         team_dic)
-    # key playername
-    last_join_date = ''
-    last_leave_date = ''
+
     for key in datetime_team_dic.keys():
-        #last_join_date = datetime_team_dic[key]['join_dates'][0]
-        #more join dates than leavedates means he is still in the team
+        # last_join_date = datetime_team_dic[key]['join_dates'][0]
+        # more join dates than leavedates means he is still in the team
         if len(datetime_team_dic[key]['join_dates']) > len(datetime_team_dic[key]['leave_dates']):
-            team_dic[key]['time_in_team'] = 'active'
-            pass #still in team
+            team_dic[key]['time_in_team'] = 'active'  # still in team
+
         else:
+            # gets last join and leave dates, compares
             last_join_date = datetime_team_dic[key]['join_dates'][0]
             last_leave_date = datetime_team_dic[key]['leave_dates'][0]
-            timeteam = last_leave_date - last_join_date
-            team_dic[key]['time_in_team'] = timeteam
-
-
+            time_team = last_leave_date - last_join_date
+            team_dic[key]['time_in_team'] = time_team
+        #checks for switch midseason
         for date in datetime_team_dic[key]['join_dates']:
             if date > dmgseasonstart_datetime:
                 team_dic[key]['join_afterSeasonStart'] = True
@@ -300,8 +297,4 @@ def get_teamdic_from_teamlink(link, proxy_list, l_proxy):
         return team_dic, new_proxies, http
 
 
-proxies = ['78.94.172.42:1080', '213.71.139.113:1080', '176.94.2.84:1080', '5.230.148.18:8082', '178.128.200.165:1080',
-           '142.93.107.176:1080']
-l = get_teamdic_from_teamlink('https://csgo.99damage.de/de/leagues/teams/24311-allet-overdriven', proxies,
-                              '78.94.172.42:1080')
-print(l[0])
+

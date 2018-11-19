@@ -19,7 +19,7 @@ def scrape_page(url='http://spys.one/en/socks-proxy-list/', soup='n'):
     }
 
     request_url = requests.post(url, headers=headers, data=data)
-    request_url.raise_for_status
+    request_url.raise_for_status()
     # print(request_url.status_code)
 
     if request_url.status_code == 200:

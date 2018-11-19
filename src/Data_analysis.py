@@ -1,18 +1,19 @@
 ﻿import pprint
 import copy
-import re
 import json
 from datetime import datetime
 from collections import Counter
 
 
-def teamdic_change_datestrings_to_timedate_objects(dic):
+def teamdic_change_datestrings_to_timedate_objects(team_dic):
     '''
-    Enter only a teamdic
-    param dic
+    Enter a team_dic changes datetime_strings to Datetime objects
+    :param team_dic: teamdic
+    :return:
     '''
+
     # creates new list and replaces the datestring with an datetimeobject
-    date_team_dic = copy.deepcopy(dic)
+    date_team_dic = copy.deepcopy(team_dic)
 
     for key in date_team_dic.keys():
         counterjoin = 0
@@ -27,7 +28,7 @@ def teamdic_change_datestrings_to_timedate_objects(dic):
                 i, '%a, %d %b %Y %H:%M:%S %z')
             counterleave += 1
     # pretty.pprint(date_team_dic)
-    return (date_team_dic)
+    return date_team_dic
 
 
 def check_if_switched_team_more_than_once():
@@ -214,7 +215,7 @@ def check_lower_div_join():
 
 
 # needed for colors :)
-class color:
+class Color:
     PURPLE = '\033[95m'
     CYAN = '\033[96m'
     DARKCYAN = '\033[36m'
@@ -229,7 +230,7 @@ class color:
 
 def readable_check_lower_div_join_color():
     read_dic = check_lower_div_join()
-    #print(len(read_dic))
+    # print(len(read_dic))
     for player_entry in read_dic:
 
         # green+bold + name of player
@@ -247,14 +248,14 @@ def readable_check_lower_div_join_color():
             # if player_entry[0][-2] != '-':
 
             if p == 0 and player_entry[0][-2] != '-':
-                print('%saktuelles Team:%s %s %s(%s)%s join: %s %s' % (color.BOLD, color.END,
-                                                                       player_entry[p][2], color.YELLOW,
-                                                                       player_entry[p][1], color.END,
+                print('%saktuelles Team:%s %s %s(%s)%s join: %s %s' % (Color.BOLD, Color.END,
+                                                                       player_entry[p][2], Color.YELLOW,
+                                                                       player_entry[p][1], Color.END,
                                                                        player_entry[p][3], player_entry[p][-3]))
             else:
-                print('%svorheriges Team:%s %s %s(%s)%s leave: %s %s' % (color.BOLD, color.END,
-                                                                         player_entry[p][2], color.RED,
-                                                                         player_entry[p][1], color.END,
+                print('%svorheriges Team:%s %s %s(%s)%s leave: %s %s' % (Color.BOLD, Color.END,
+                                                                         player_entry[p][2], Color.RED,
+                                                                         player_entry[p][1], Color.END,
                                                                          player_entry[p][4], player_entry[p][-3]))
         print("_________________________")
 
@@ -264,7 +265,7 @@ def readable_check_lower_div_join():
         '\n\n____________________________________________________________\n\nSpieler, die zu Beginn oder im Laufe einer jeden Saison in einem Team einer höheren Division vertreten waren, sind in einer niedrigeren Division nicht spielberechtigt.\n')
 
     read_dic = check_lower_div_join()
-    #print(len(read_dic))
+    # print(len(read_dic))
     for player_entry in read_dic:
 
         # name of player
@@ -295,7 +296,7 @@ def readable99_check_lower_div_join():
         '\n\n____________________________________________________________\n\nSpieler, die zu Beginn oder im Laufe einer jeden Saison in einem Team einer höheren Division vertreten waren, sind in einer niedrigeren Division nicht spielberechtigt.\n')
 
     read_dic = check_lower_div_join()
-    #print(len(read_dic))
+    # print(len(read_dic))
     for player_entry in read_dic:
         # 99dmgbold + name of player
         print('[b]%s[/b]' % (str(player_entry[0][0])))
@@ -321,7 +322,7 @@ def readable_check_if_switched_team_more_than_once():
         Das Wechseln des Teams während einer laufenden Saison ist nur ein Mal erlaubt.
         Mehrfacher Wechsel führt zur Sperrung des Spielers für die laufende Saison und Playoffs bzw.Relegationen.\n''')
     read_dic = check_if_switched_team_more_than_once()
-    #print(len(read_dic))
+    # print(len(read_dic))
     for player_entry in read_dic:
 
         # name of player
@@ -349,10 +350,7 @@ def readable_check_if_switched_team_more_than_once():
 
 if __name__ == '__main__':
 
-
-    # check_if_switched_team_more_than_once()
-    # pprint.pprint(check())
-    #TODO improve ruleinfo
+    # TODO improve ruleinfo
     readable_check_if_switched_team_more_than_once()
 
     readable_check_lower_div_join()
