@@ -17,6 +17,7 @@ def get_divlinks_dic_from_leaguepage(link):
     '''
     # connect
     url = link
+    #TODO remove generate_user_agent
     headers = {
         'User-Agent': generate_user_agent(device_type=("desktop", "smartphone"))}
 

@@ -32,7 +32,7 @@ def teamdic_change_datestrings_to_timedate_objects(team_dic):
 
 
 def check_if_switched_team_more_than_once():
-    # TODO rule 24hr + add timeinteam
+    # TODO rule 24hr 
     ret_list = []
     with open('team_player_data.json') as json_data:
         teamdata = json.load(json_data)
