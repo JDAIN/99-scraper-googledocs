@@ -256,15 +256,20 @@ def get_teamdic_from_teamlink(link, proxy_list, l_proxy):
     for key in datetime_team_dic.keys():
         # last_join_date = datetime_team_dic[key]['join_dates'][0]
         # more join dates than leavedates means he is still in the team
+
         if len(datetime_team_dic[key]['join_dates']) > len(datetime_team_dic[key]['leave_dates']):
             team_dic[key]['time_in_team'] = 'active'  # still in team
 
         else:
             # gets last join and leave dates, compares
-            last_join_date = datetime_team_dic[key]['join_dates'][0]
+            try:#exception if a Player was in a Team but never joined #thx 99
+                last_join_date = datetime_team_dic[key]['join_dates'][0]
+            except:
+                break
             last_leave_date = datetime_team_dic[key]['leave_dates'][0]
             time_team = last_leave_date - last_join_date
-            team_dic[key]['time_in_team'] = time_team
+            #days, hours, minutes
+            team_dic[key]['time_in_team'] = (time_team.days, time_team.seconds//3600, (time_team.seconds//60)%60)
         #checks for switch midseason
         for date in datetime_team_dic[key]['join_dates']:
             if date > dmgseasonstart_datetime:
