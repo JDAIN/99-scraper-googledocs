@@ -7,7 +7,7 @@ import requests
 import scrap
 import json
 import scrapProxylistSpys_one
-from user_agent import generate_user_agent
+from user_agents_file import user_agents
 
 
 def scrap_league_and_div_data(link, delay=0):
@@ -71,12 +71,13 @@ def connect_team(link, proxy):
     # headers
     # TODO replace
     headers = {
-        'User-Agent': generate_user_agent(device_type=("desktop", "smartphone"))}
+        'User-Agent': random.choice(user_agents)}
     proxies = {
         'http': 'socks5://' + proxy,
         'https': 'socks5://' + proxy
     }
     logging.warning('proxy: ' + proxy)
+    
     # user: change timeout, if to many proxies refuse (recommended = 2)
     website = requests.get(link, headers=headers, proxies=proxies, timeout=2)
     website.raise_for_status()
