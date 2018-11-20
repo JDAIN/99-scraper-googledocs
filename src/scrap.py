@@ -139,16 +139,14 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list, l_proxy):
     return teamlinks_dic, new_proxies, http
 
 
-def get_teamdic_from_teamlink(link, proxy_list, l_proxy):
-    '''
+def get_teamdic_from_teamlink(website):
+    """
     Gets all Player/Teaminfo from a Teamlink
     Action  is mapped to Button 'Add Players'
-    :param l_proxy: last proxy used for multiple uses of proxy
-    :param link: Teamlink
-    :param proxy_list: Proxylist used for Scraping
+    :param website: website from requests with status 200
     :return: team_dic in Form
             {'steam_id': player_steamid, 'join_dates': [], 'leave_dates': [], 'time_in_team': '', 'join_afterSeasonStart': '-', 'leave_afterSeasonStart': '-'}
-    '''
+    """
     # enter when the 99dmg season starts, used to check if player was in the team at season start
     # season10 start: https://csgo.99damage.de/de/news/74090-jetzt-anmelden-fuer-die-99damage-liga
     # 99dmg season 10 started at 28. September 2018 (18: 00 Uhr)
@@ -158,55 +156,6 @@ def get_teamdic_from_teamlink(link, proxy_list, l_proxy):
     dmgseasonstart_datetime = datetime.strptime(
         '28.09.2018 18:00 +0200', '%d.%m.%Y %H:%M %z')
     # connect
-    url = link
-    headers = {
-        'User-Agent': generate_user_agent(device_type=("desktop", "smartphone"))}
-    # use proxies to connect
-    proxl = proxy_list
-
-    website = None
-    http = ''
-    passed_proxy= l_proxy
-    while website is None:
-        try:
-            if l_proxy and l_proxy == passed_proxy:
-                # logging.warning(proxl)
-                logging.warning('used:' + str(l_proxy))
-                proxies = {
-                    'http': 'socks5://' + l_proxy,
-                    'https': 'socks5://' + l_proxy
-                }
-                http = l_proxy
-                website = requests.get(url, headers=headers, proxies=proxies, timeout=2)
-
-                logging.warning(website.status_code)
-                website.raise_for_status()
-                # logging.warning('no raise')
-                # TODO remove l_proxy var and replace with http
-
-            else:
-                # print('connect')
-                http = random.choice(proxl)
-                logging.warning('tried: ' + str(http))
-                proxies = {
-                    'http': 'socks5://' + http,
-                    'https': 'socks5://' + http
-                }
-                website = requests.get(url, headers=headers, proxies=proxies, timeout=2)
-                website.raise_for_status()
-        except:
-            # if almost all proxies got removed, scrape new proxies with more countrys
-            if len(proxl) < 2:
-                print('Proxylist almost empty. Scraping new Proxies')
-                proxl = scrapProxylistSpys_one.scrape_DACH_close_countries_and_get_only_proxies_list()
-
-            else:
-                if http in proxl:
-                    proxl.remove(http)
-                    l_proxy = random.choice(proxl) #if the l_proxy sucks get a new one
-
-            pass
-
     # get html
     team_soup = bs4.BeautifulSoup(website.text, features="lxml")
     # {'steam_id': player_steamid, 'join_dates': [], 'leave_dates': [], 'time_in_team': '', 'join_afterSeasonStart': '-', 'leave_afterSeasonStart': '-'}
@@ -299,11 +248,11 @@ def get_teamdic_from_teamlink(link, proxy_list, l_proxy):
                 team_dic[active_team_playernames[i].text]['steam_id'] = active_team_steamids[i].text
     except:
         pass
-    new_proxies = proxl
+
     if len(team_dic) == 0:
-        return 'no players, team deleted', new_proxies, http
+        return 'no players, team deleted'
     else:
-        return team_dic, new_proxies, http
+        return team_dic
 
 
 

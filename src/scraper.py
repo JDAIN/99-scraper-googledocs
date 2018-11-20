@@ -3,10 +3,14 @@ import copy
 import io
 import logging
 import pprint
+import random
+
+import requests
 import scrap
 import json
 import time
 import scrapProxylistSpys_one
+from user_agent import generate_user_agent
 
 
 def scrap_league_and_div_data(link, delay=0):
@@ -60,6 +64,21 @@ def scrap_league_and_div_data(link, delay=0):
     # file.write('dmgdata = ' + pprint.pformat(data))
 
 
+def connect_Team(link, proxy):
+    # headers
+    # TODO replace
+    headers = {
+        'User-Agent': generate_user_agent(device_type=("desktop", "smartphone"))}
+    proxies = {
+        'http': 'socks5://' + proxy,
+        'https': 'socks5://' + proxy
+    }
+    logging.warning('proxy: ' + proxy)
+    website = requests.get(link, headers=headers, proxies=proxies, timeout=1)
+    website.raise_for_status()
+    return website  # requests objects needed for bs4
+
+
 def add_teamdata_to_data(delay=10):
     '''
     @param delay
@@ -92,21 +111,43 @@ def add_teamdata_to_data(delay=10):
     print('Scraping DACH socks5 Proxies from spys.one')
     # scraping proxies from spys.one
     socks5list = scrapProxylistSpys_one.scrape_DACH_D_and_get_only_proxies_list()
-    used_proxy = ''
-    l_proxy_counter = 0
+    proxy = ''
+    last_proxy_counter = 21
     for k, v in teamdata.items():
         print('scraping %s...' % k)
         for ks, vs in teamdata[k]['Teams'].items():
             if 'Players' not in vs.keys():
-                l_proxy_counter += 1
-                # user: change value, for faster or slower proxyswitch, if proxy was fast enough, recommended:20
-                if l_proxy_counter == 20:
-                    used_proxy = ''
-                    l_proxy_counter = 0
+                last_proxy_counter += 1
+                if last_proxy_counter > 20:
+                    proxy = random.choice(socks5list)
+                    logging.warning('switch proxy')
+                    last_proxy_counter = 0
+                while True:
+                    try:
 
+                        players = scrap.get_teamdic_from_teamlink(connect_Team(vs['link'], proxy))
+                        break
+                    except:  # must be this broad
+
+                        # remove slow proxy
+                        socks5list.remove(proxy)
+                        logging.warning('timeout: %s removed (proxies left: %s)' % (proxy, len(socks5list)))
+                        # if proxy almost empty get more proxies
+                        if len(socks5list) <= 3:  # if used any lower value likelihood of repeated Proxy usage to high
+                            socks5list = scrapProxylistSpys_one.scrape_DACH_close_countries_and_get_only_proxies_list()
+                            logging.warning('Proxylist empty, get new')
+                        # logging.warning(socks5list)
+                        proxy = random.choice(socks5list)
+                        pass
+
+                # l_proxy_counter += 1
+                # user: change value, for faster or slower proxyswitch, if proxy was fast enough, recommended:20
+                # if l_proxy_counter == 20:
+                #     used_proxy = ''
+                #     l_proxy_counter = 0
 
                 # passing proxies to scrap methode and getting the new proxieslist (removed slow proxies)
-                players, socks5list, used_proxy = scrap.get_teamdic_from_teamlink(vs['link'], socks5list, used_proxy)
+                # players, socks5list, used_proxy = scrap.get_teamdic_from_teamlink(vs['link'], socks5list, used_proxy)
 
                 # print(ks + ' sleeping...(' + str(delay) + ')' + '')
 
@@ -114,7 +155,7 @@ def add_teamdata_to_data(delay=10):
                 teamdata[k]['Teams'][ks].update({'Players': players})
             counter += 1
             print('(%s/%s) %s - %s' %
-                  (str(counter), str(est_teams), ks, str(used_proxy.split(':')[0])))
+                  (str(counter), str(est_teams), ks, str(proxy.split(':')[0])))
         # after every division write to file,slower can be moved out of for for speed improvment but less stability
 
         with io.open('team_player_data.json', 'w', encoding="utf-8") as file:
@@ -122,4 +163,3 @@ def add_teamdata_to_data(delay=10):
             print('wrote Data of %s to File' % k)
 
     print('Done')
-
