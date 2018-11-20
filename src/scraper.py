@@ -70,12 +70,20 @@ def add_teamdata_to_data(delay=10):
     try:
         # TODO if name changed in gui change here as well
         with open('teamdata.json') as json_data:
-            teamdata = json.load(json_data)
+            f_teamdata = json.load(json_data)
     except FileNotFoundError as err:
         # TODO output on GUI
         print('[ERROR] You need to run the Leaguesraper first    ', err)
         return
+    try:
+        with open('team_player_data.json', 'x') as json_data:
+            json.dump(f_teamdata, json_data, indent=4)
 
+    except FileExistsError:
+        print('team_player_data already existing, only adding missing players')
+
+    with open('team_player_data.json') as json_data:
+        teamdata = json.load(json_data)
     counter = 0
     est_teams = len(teamdata.keys()) * 8
     est_time_min = round((est_teams * 1.3) / 60)
@@ -89,21 +97,24 @@ def add_teamdata_to_data(delay=10):
     for k, v in teamdata.items():
         print('scraping %s...' % k)
         for ks, vs in teamdata[k]['Teams'].items():
-            l_proxy_counter += 1
-            # user: change value, for faster or slower proxyswitch, if proxy was fast enough, recommended:20
-            if l_proxy_counter == 20:
-                used_proxy = ''
-                l_proxy_counter = 0
+            if 'Players' not in vs.keys():
+                l_proxy_counter += 1
+                # user: change value, for faster or slower proxyswitch, if proxy was fast enough, recommended:20
+                if l_proxy_counter == 20:
+                    used_proxy = ''
+                    l_proxy_counter = 0
 
+
+                # passing proxies to scrap methode and getting the new proxieslist (removed slow proxies)
+                players, socks5list, used_proxy = scrap.get_teamdic_from_teamlink(vs['link'], socks5list, used_proxy)
+
+                # print(ks + ' sleeping...(' + str(delay) + ')' + '')
+
+                # time.sleep(delay)
+                teamdata[k]['Teams'][ks].update({'Players': players})
             counter += 1
-            # passing proxies to scrap methode and getting the new proxieslist (removed slow proxies)
-            players, socks5list, used_proxy = scrap.get_teamdic_from_teamlink(vs['link'], socks5list, used_proxy)
-
-            # print(ks + ' sleeping...(' + str(delay) + ')' + '')
             print('(%s/%s) %s - %s' %
                   (str(counter), str(est_teams), ks, str(used_proxy.split(':')[0])))
-            # time.sleep(delay)
-            teamdata[k]['Teams'][ks].update({'Players': players})
         # after every division write to file,slower can be moved out of for for speed improvment but less stability
 
         with io.open('team_player_data.json', 'w', encoding="utf-8") as file:
