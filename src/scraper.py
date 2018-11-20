@@ -2,13 +2,10 @@
 import copy
 import io
 import logging
-import pprint
 import random
-
 import requests
 import scrap
 import json
-import time
 import scrapProxylistSpys_one
 from user_agent import generate_user_agent
 
@@ -64,7 +61,13 @@ def scrap_league_and_div_data(link, delay=0):
     # file.write('dmgdata = ' + pprint.pformat(data))
 
 
-def connect_Team(link, proxy):
+def connect_team(link, proxy):
+    """
+    Connects to 99Damage site and gets requests website object
+    :param link: link to 99Damage team
+    :param proxy: proxy used for the connection
+    :return: return request object of teampage
+    """
     # headers
     # TODO replace
     headers = {
@@ -74,7 +77,8 @@ def connect_Team(link, proxy):
         'https': 'socks5://' + proxy
     }
     logging.warning('proxy: ' + proxy)
-    website = requests.get(link, headers=headers, proxies=proxies, timeout=1)
+    # user: change timeout, if to many proxies refuse (recommended = 2)
+    website = requests.get(link, headers=headers, proxies=proxies, timeout=2)
     website.raise_for_status()
     return website  # requests objects needed for bs4
 
@@ -125,7 +129,7 @@ def add_teamdata_to_data(delay=10):
                 while True:
                     try:
 
-                        players = scrap.get_teamdic_from_teamlink(connect_Team(vs['link'], proxy))
+                        players = scrap.get_teamdic_from_teamlink(connect_team(vs['link'], proxy))
                         break
                     except:  # must be this broad
 
@@ -140,18 +144,6 @@ def add_teamdata_to_data(delay=10):
                         proxy = random.choice(socks5list)
                         pass
 
-                # l_proxy_counter += 1
-                # user: change value, for faster or slower proxyswitch, if proxy was fast enough, recommended:20
-                # if l_proxy_counter == 20:
-                #     used_proxy = ''
-                #     l_proxy_counter = 0
-
-                # passing proxies to scrap methode and getting the new proxieslist (removed slow proxies)
-                # players, socks5list, used_proxy = scrap.get_teamdic_from_teamlink(vs['link'], socks5list, used_proxy)
-
-                # print(ks + ' sleeping...(' + str(delay) + ')' + '')
-
-                # time.sleep(delay)
                 teamdata[k]['Teams'][ks].update({'Players': players})
             counter += 1
             print('(%s/%s) %s - %s' %

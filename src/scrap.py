@@ -155,7 +155,6 @@ def get_teamdic_from_teamlink(website):
     # IMPORTANT TODO change for next season
     dmgseasonstart_datetime = datetime.strptime(
         '28.09.2018 18:00 +0200', '%d.%m.%Y %H:%M %z')
-    # connect
     # get html
     team_soup = bs4.BeautifulSoup(website.text, features="lxml")
     # {'steam_id': player_steamid, 'join_dates': [], 'leave_dates': [], 'time_in_team': '', 'join_afterSeasonStart': '-', 'leave_afterSeasonStart': '-'}
