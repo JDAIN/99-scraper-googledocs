@@ -81,7 +81,7 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list, l_proxy):
     website = None
     http = ''
     while website is None:
-        try:
+        try: #TODO implement like in teamdic
             # logging.warning(l_proxy)
             if l_proxy:
                 # print('connect')
@@ -203,7 +203,7 @@ def get_teamdic_from_teamlink(link, proxy_list, l_proxy):
             else:
                 if http in proxl:
                     proxl.remove(http)
-                    l_proxy = random.choice(proxl) #if the l_proxy sucks get a new one 
+                    l_proxy = random.choice(proxl) #if the l_proxy sucks get a new one
 
             pass
 
