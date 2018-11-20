@@ -166,9 +166,10 @@ def get_teamdic_from_teamlink(link, proxy_list, l_proxy):
 
     website = None
     http = ''
+    passed_proxy= l_proxy
     while website is None:
         try:
-            if l_proxy:
+            if l_proxy and l_proxy == passed_proxy:
                 # logging.warning(proxl)
                 logging.warning('used:' + str(l_proxy))
                 proxies = {
@@ -202,6 +203,8 @@ def get_teamdic_from_teamlink(link, proxy_list, l_proxy):
             else:
                 if http in proxl:
                     proxl.remove(http)
+                    l_proxy = random.choice(proxl) #if the l_proxy sucks get a new one 
+
             pass
 
     # get html
