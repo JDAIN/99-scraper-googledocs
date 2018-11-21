@@ -10,7 +10,7 @@ import scrapProxylistSpys_one
 from user_agents_file import user_agents
 
 
-def connect_league_and_div(link,proxy):
+def connect_league_and_div(link, proxy, user_agent):
     """
     Connects to 99Damage div page and gets requests-website-object
     :param link: link to 99Damage div
@@ -18,17 +18,18 @@ def connect_league_and_div(link,proxy):
     :return: return request object of div
     """
     headers = {
-        'User-Agent': random.choice(user_agents)}
+        'User-Agent': user_agent}
     proxies = {
         'http': 'socks5://' + proxy,
         'https': 'socks5://' + proxy
     }
     logging.warning('proxy: ' + proxy)
-
+    logging.warning('user_agent: ' + user_agent)
     # user: change timeout, if to many proxies refuse (recommended = 2)
     website = requests.get(link, headers=headers, proxies=proxies, timeout=2)
     website.raise_for_status()
     return website  # requests objects needed for bs4
+
 
 def scrap_league_and_div_data(link):
     '''
@@ -47,22 +48,27 @@ def scrap_league_and_div_data(link):
     counter = 0
     # 1.6 estimated proxy timeout 2 sec
     est_runtime_min = round((amount_divs * 1.6) / 60)
-    print('Estimated runtime: %s Minutes' %(est_runtime_min))
+    print('Estimated runtime: %s Minutes' % (est_runtime_min))
     print('Scraping DACH socks5 Proxies from spys.one')
     # scraping proxies from spys.one
     socks5list = scrapProxylistSpys_one.scrape_DACH_D_and_get_only_proxies_list()
     proxy = ''
     last_proxy_counter = 21
     for k, v in divlinks_list.items():
+        last_proxy_counter += 1
         if last_proxy_counter > 20:
+            user_agent = random.choice(user_agents)
             proxy = random.choice(socks5list)
             logging.warning('switch proxy')
             last_proxy_counter = 0
         while True:
             try:
-                teamlinks_list = connect_league_and_div(v['link'], proxy)
+                logging.error(v['link'])
+                teamlinks_list = scrap.get_teamlinks_dic_from_group(
+                    connect_league_and_div(v['link'], proxy, user_agent))
                 break
-            except:  # must be this broad
+            except Exception as e:  # must be this broad
+                logging.warning(e)
                 socks5list.remove(proxy)
                 logging.warning('timeout: %s removed (proxies left: %s)' % (proxy, len(socks5list)))
                 # if proxy almost empty get more proxies
@@ -71,14 +77,14 @@ def scrap_league_and_div_data(link):
                     logging.warning('Proxylist empty, get new')
                 # logging.warning(socks5list)
                 proxy = random.choice(socks5list)
+                user_agent = random.choice(user_agents)
+
                 pass
         league_team_data[k].update({'Teams': teamlinks_list})
         counter += 1
         # prints number, divname and used proxy ip without port
         print('(%s/%s) %s - %s' %
               (str(counter), str(amount_divs), k, str(proxy.split(':')[0])))
-
-
 
     # TODO make changeable in gui
     print('Done Scraping....writing to File....')
@@ -89,7 +95,7 @@ def scrap_league_and_div_data(link):
     # file.write('dmgdata = ' + pprint.pformat(data))
 
 
-def connect_team(link, proxy):
+def connect_team(link, proxy,user_agent):
     """
     Connects to 99Damage team page and gets requests-website-object
     :param link: link to 99Damage team
@@ -99,13 +105,13 @@ def connect_team(link, proxy):
     # headers
     # TODO replace
     headers = {
-        'User-Agent': random.choice(user_agents)}
+        'User-Agent': user_agent}
     proxies = {
         'http': 'socks5://' + proxy,
         'https': 'socks5://' + proxy
     }
     logging.warning('proxy: ' + proxy)
-
+    logging.warning('user_agent: ' + user_agent)
     # user: change timeout, if to many proxies refuse (recommended = 2)
     website = requests.get(link, headers=headers, proxies=proxies, timeout=2)
     website.raise_for_status()
@@ -146,21 +152,25 @@ def add_teamdata_to_data():
     socks5list = scrapProxylistSpys_one.scrape_DACH_D_and_get_only_proxies_list()
     proxy = ''
     last_proxy_counter = 21
+
     for k, v in teamdata.items():
         print('scraping %s...' % k)
+        team_added_boolean = False
         for ks, vs in teamdata[k]['Teams'].items():
             if 'Players' not in vs.keys():
+                team_added_boolean = True
                 last_proxy_counter += 1
                 if last_proxy_counter > 20:
+                    user_agent = random.choice(user_agents)
                     proxy = random.choice(socks5list)
                     logging.warning('switch proxy')
                     last_proxy_counter = 0
                 while True:
                     try:
-                        players = scrap.get_teamdic_from_teamlink(connect_team(vs['link'], proxy))
+                        players = scrap.get_teamdic_from_teamlink(connect_team(vs['link'], proxy, user_agent))
                         break
-                    except:  # must be this broad
-
+                    except Exception as e:  # must be this broad
+                        logging.warning(e)
                         # remove slow proxy
                         socks5list.remove(proxy)
                         logging.warning('timeout: %s removed (proxies left: %s)' % (proxy, len(socks5list)))
@@ -170,6 +180,7 @@ def add_teamdata_to_data():
                             logging.warning('Proxylist empty, get new')
                         # logging.warning(socks5list)
                         proxy = random.choice(socks5list)
+                        user_agent = random.choice(user_agents)
                         pass
 
                 teamdata[k]['Teams'][ks].update({'Players': players})
@@ -177,9 +188,9 @@ def add_teamdata_to_data():
             print('(%s/%s) %s - %s' %
                   (str(counter), str(est_teams), ks, str(proxy.split(':')[0])))
         # after every division write to file,slower can be moved out of for for speed improvment but less stability
-
-        with io.open('team_player_data.json', 'w', encoding="utf-8") as file:
-            json.dump(teamdata, file, indent=4)
-            print('wrote Data of %s to File' % k)
+        if team_added_boolean:
+            with io.open('team_player_data.json', 'w', encoding="utf-8") as file:
+                json.dump(teamdata, file, indent=4)
+                print('wrote Data of %s to File' % k)
 
     print('Done')

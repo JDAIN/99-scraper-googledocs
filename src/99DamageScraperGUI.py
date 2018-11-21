@@ -117,8 +117,7 @@ class DamageScraperGUI:
         print(
             "_________________________\nAdd Teamdata Scraper started\n_________________________")
         # TODO IF value error print error
-        add_team_thread = threading.Thread(target=scraper.add_teamdata_to_data, args=[
-            int(self.delay_team_entry.get())],daemon=True)
+        add_team_thread = threading.Thread(target=scraper.add_teamdata_to_data,daemon=True)
         add_team_thread.start()
 
     def stop(self):
