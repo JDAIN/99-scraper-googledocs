@@ -1,12 +1,8 @@
 # coding=utf-8
-import random
-import logging
 import requests
 import bs4
 import copy
 from datetime import datetime
-from user_agent import generate_user_agent
-import scrapProxylistSpys_one
 
 
 def get_divlinks_dic_from_leaguepage(link):
@@ -19,7 +15,7 @@ def get_divlinks_dic_from_leaguepage(link):
     url = link
     #TODO remove generate_user_agent
     headers = {
-        'User-Agent': generate_user_agent(device_type=("desktop", "smartphone"))}
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:46.0) Gecko/20100101 Firefox/46.0'}
 
     website = requests.get(url, headers=headers)
     website.raise_for_status()
