@@ -107,7 +107,7 @@ class DamageScraperGUI:
         # TODO IF value error print error
         # 'https://csgo.99damage.de/de/leagues/99dmg/989-saison-10'
         league_scrap_thread = threading.Thread(target=scraper.scrap_league_and_div_data, args=[
-            str(self.leaguelink_entry.get()), int(self.delay_league_entry.get())], name='League Scrap',daemon=True)
+            str(self.leaguelink_entry.get()),], name='League Scrap',daemon=True)
 
 
         league_scrap_thread.start()

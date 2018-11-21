@@ -63,7 +63,7 @@ def teamdic_change_datestrings_to_timedate_objects(dic):
     return date_team_dic
 
 
-def get_teamlinks_dic_from_group(grouplink, proxy_list, l_proxy):
+def get_teamlinks_dic_from_group(website):
     '''
     Gets all Teamlinks from a Group.
     Action  is mapped to Button 'Scrap League'
@@ -72,57 +72,6 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list, l_proxy):
     :param l_proxy last used proxy, which worked
     :return: dic with added Teams to Groups
     '''
-    # connect
-    url = grouplink
-    headers = {
-        'User-Agent': generate_user_agent(device_type=("desktop", "smartphone"))}
-    # use proxies to connect
-    proxl = proxy_list
-    website = None
-    http = ''
-    while website is None:
-        try: #TODO implement like in teamdic
-            # logging.warning(l_proxy)
-            if l_proxy:
-                # print('connect')
-                # http = random.choice(proxl)
-                # logging.warning(proxl)
-                proxies = {
-                    'http': 'socks5://' + l_proxy,
-                    'https': 'socks5://' + l_proxy
-                }
-                # TODO remove l_proxy var and replace with http
-
-                http = l_proxy
-                logging.warning('used:' + str(l_proxy))
-                # user: change timeout for fast or slower proxy, timeout recommended 2-3
-                website = requests.get(url, headers=headers, proxies=proxies, timeout=2)
-
-                logging.warning(website.status_code)
-                website.raise_for_status()
-
-            else:
-                http = random.choice(proxl)
-                logging.warning('tried: ' + str(http))
-                # logging.warning(http)
-                proxies = {
-                    'http': 'socks5://' + http,
-                    'https': 'socks5://' + http
-                }
-                # user: change timeout for fast or slower proxy, timeout recommended 2-3
-                website = requests.get(url, headers=headers, proxies=proxies, timeout=2)
-
-                website.raise_for_status()
-
-        except:
-            if len(proxl) < 2:
-                print('Proxylist almost empty. Scraping new Proxies')
-                proxl = scrapProxylistSpys_one.scrape_DACH_close_countries_and_get_only_proxies_list()
-            else:
-                if http in proxl:
-                    proxl.remove(http)
-            # print(website)
-            pass
     # get html
     group_soup = bs4.BeautifulSoup(website.text, features="lxml")
 
@@ -135,8 +84,8 @@ def get_teamlinks_dic_from_group(grouplink, proxy_list, l_proxy):
                 teamlinks_dic[e.text.lstrip()] = {'link': e.a['href']}
         except:
             pass
-    new_proxies = proxl
-    return teamlinks_dic, new_proxies, http
+
+    return teamlinks_dic
 
 
 def get_teamdic_from_teamlink(website):

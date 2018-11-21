@@ -51,26 +51,35 @@ def scrap_league_and_div_data(link):
     print('Scraping DACH socks5 Proxies from spys.one')
     # scraping proxies from spys.one
     socks5list = scrapProxylistSpys_one.scrape_DACH_D_and_get_only_proxies_list()
-    used_proxy = ''
-    l_proxy_counter = 0
+    proxy = ''
+    last_proxy_counter = 21
     for k, v in divlinks_list.items():
-        l_proxy_counter += 1
-    # user: change value, for faster or slower proxyswitch, if proxy was fast enough, recommended:20
-    if l_proxy_counter == 20:
-        used_proxy = ''
-    l_proxy_counter = 0
+        if last_proxy_counter > 20:
+            proxy = random.choice(socks5list)
+            logging.warning('switch proxy')
+            last_proxy_counter = 0
+        while True:
+            try:
+                teamlinks_list = connect_league_and_div(v['link'], proxy)
+                break
+            except:  # must be this broad
+                socks5list.remove(proxy)
+                logging.warning('timeout: %s removed (proxies left: %s)' % (proxy, len(socks5list)))
+                # if proxy almost empty get more proxies
+                if len(socks5list) <= 3:  # if used any lower value likelihood of repeated Proxy usage to high
+                    socks5list = scrapProxylistSpys_one.scrape_DACH_close_countries_and_get_only_proxies_list()
+                    logging.warning('Proxylist empty, get new')
+                # logging.warning(socks5list)
+                proxy = random.choice(socks5list)
+                pass
+        league_team_data[k].update({'Teams': teamlinks_list})
+        counter += 1
+        # prints number, divname and used proxy ip without port
+        print('(%s/%s) %s - %s' %
+              (str(counter), str(amount_divs), k, str(proxy.split(':')[0])))
 
-    # passing proxies to scrap methode and getting the new proxieslist (removed slow proxies)
-    teamlinks_list, socks5list, used_proxy = scrap.get_teamlinks_dic_from_group(v['link'], socks5list, used_proxy)
 
-    counter += 1
-    league_team_data[k].update({'Teams': teamlinks_list})
-    # prints number, divname and used proxy ip without port
-    print('(%s/%s) %s - %s' %
-          (str(counter), str(amount_divs), k, str(used_proxy.split(':')[0])))
-    # time.sleep(delay) #not needed
 
-    # TODO is it? do not change the filename, is needed for add_teamdata_to_data
     # TODO make changeable in gui
     print('Done Scraping....writing to File....')
     with io.open('teamdata.json', 'w', encoding="utf-8") as file:
@@ -148,7 +157,6 @@ def add_teamdata_to_data():
                     last_proxy_counter = 0
                 while True:
                     try:
-
                         players = scrap.get_teamdic_from_teamlink(connect_team(vs['link'], proxy))
                         break
                     except:  # must be this broad
