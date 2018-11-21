@@ -23,8 +23,8 @@ def connect_league_and_div(link, proxy, user_agent):
         'http': 'socks5://' + proxy,
         'https': 'socks5://' + proxy
     }
-    logging.warning('proxy: ' + proxy)
-    logging.warning('user_agent: ' + user_agent)
+    logging.info('proxy: ' + proxy)
+    logging.info('user_agent: ' + user_agent)
     # user: change timeout, if to many proxies refuse (recommended = 2)
     website = requests.get(link, headers=headers, proxies=proxies, timeout=2)
     website.raise_for_status()
@@ -59,23 +59,23 @@ def scrap_league_and_div_data(link):
         if last_proxy_counter > 20:
             user_agent = random.choice(user_agents)
             proxy = random.choice(socks5list)
-            logging.warning('switch proxy')
+            logging.info('switch proxy')
             last_proxy_counter = 0
         while True:
             try:
-                logging.error(v['link'])
+                logging.info(v['link'])
                 teamlinks_list = scrap.get_teamlinks_dic_from_group(
                     connect_league_and_div(v['link'], proxy, user_agent))
                 break
             except Exception as e:  # must be this broad
-                logging.warning(e)
+                logging.info(e)
                 socks5list.remove(proxy)
-                logging.warning('timeout: %s removed (proxies left: %s)' % (proxy, len(socks5list)))
+                logging.info('timeout: %s removed (proxies left: %s)' % (proxy, len(socks5list)))
                 # if proxy almost empty get more proxies
                 if len(socks5list) <= 3:  # if used any lower value likelihood of repeated Proxy usage to high
                     socks5list = scrapProxylistSpys_one.scrape_DACH_close_countries_and_get_only_proxies_list()
-                    logging.warning('Proxylist empty, get new')
-                # logging.warning(socks5list)
+                    logging.info('Proxylist empty, get new')
+                # logging.info(socks5list)
                 proxy = random.choice(socks5list)
                 user_agent = random.choice(user_agents)
 
@@ -110,8 +110,8 @@ def connect_team(link, proxy,user_agent):
         'http': 'socks5://' + proxy,
         'https': 'socks5://' + proxy
     }
-    logging.warning('proxy: ' + proxy)
-    logging.warning('user_agent: ' + user_agent)
+    logging.info('proxy: ' + proxy)
+    logging.info('user_agent: ' + user_agent)
     # user: change timeout, if to many proxies refuse (recommended = 2)
     website = requests.get(link, headers=headers, proxies=proxies, timeout=2)
     website.raise_for_status()
@@ -163,22 +163,22 @@ def add_teamdata_to_data():
                 if last_proxy_counter > 20:
                     user_agent = random.choice(user_agents)
                     proxy = random.choice(socks5list)
-                    logging.warning('switch proxy')
+                    logging.info('switch proxy')
                     last_proxy_counter = 0
                 while True:
                     try:
                         players = scrap.get_teamdic_from_teamlink(connect_team(vs['link'], proxy, user_agent))
                         break
                     except Exception as e:  # must be this broad
-                        logging.warning(e)
+                        logging.info(e)
                         # remove slow proxy
                         socks5list.remove(proxy)
-                        logging.warning('timeout: %s removed (proxies left: %s)' % (proxy, len(socks5list)))
+                        logging.info('timeout: %s removed (proxies left: %s)' % (proxy, len(socks5list)))
                         # if proxy almost empty get more proxies
                         if len(socks5list) <= 3:  # if used any lower value likelihood of repeated Proxy usage to high
                             socks5list = scrapProxylistSpys_one.scrape_DACH_close_countries_and_get_only_proxies_list()
-                            logging.warning('Proxylist empty, get new')
-                        # logging.warning(socks5list)
+                            logging.info('Proxylist empty, get new')
+                        # logging.info(socks5list)
                         proxy = random.choice(socks5list)
                         user_agent = random.choice(user_agents)
                         pass

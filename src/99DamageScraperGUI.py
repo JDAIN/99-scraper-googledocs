@@ -148,7 +148,8 @@ def on_closing():
         root.destroy()
 
 if __name__ == '__main__':
-
+    logging.basicConfig(filename='99DamageSraperGUI.log', level=logging.INFO)
+    logging.info('created GUI')
     root = Tk()
     my_gui = DamageScraperGUI(root)
 
