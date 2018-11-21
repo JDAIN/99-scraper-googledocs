@@ -355,10 +355,9 @@ def readable_check_if_switched_team_more_than_once():
 
 
 if __name__ == '__main__':
-    # TODO improve ruleinfo
     print(
         'Warnung:\n Liste ist nicht zu 100% genau, es sollte nochmal selber überprüft werden, ob es sich wirklich um einen Regelverstoß handelt\n')
-    print(check_if_switched_team_more_than_once())
+
     readable_check_if_switched_team_more_than_once()
 
     readable_check_lower_div_join()
