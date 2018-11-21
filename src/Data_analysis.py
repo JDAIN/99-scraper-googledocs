@@ -63,10 +63,12 @@ def check_if_switched_team_more_than_once():
                         if len(vss['leave_dates']) > 0:
                             joinleave_player_list.append(
                                 [kss, k, ks, vss['join_dates'][0], vss['leave_dates'][0], v['link'], vs['link'],
+                                 vss['time_in_team'],
                                  vss['steam_id']])
                         else:
                             joinleave_player_list.append(
                                 [kss, k, ks, vss['join_dates'][0], vss['leave_dates'], v['link'], vs['link'],
+                                 vss['time_in_team'],
                                  vss['steam_id']])
 
     player_counter = Counter(x[0] for x in joinleave_player_list)
@@ -340,17 +342,18 @@ def readable_check_if_switched_team_more_than_once():
             # if player_entry[0][-2] != '-':
 
             if p == 0 and player_entry[0][-2] != '-':
-                print('aktuelles Team: %s (%s) join: %s %s' % (
-                    player_entry[p][2], player_entry[p][1], player_entry[p][3], player_entry[p][-3]))
+                print('aktuelles Team: %s (%s) Beitritt: %s Dauer: Aktiv %s' % (
+                    player_entry[p][2], player_entry[p][1], player_entry[p][3], player_entry[p][-4]))
             else:
-                print('vorheriges Team: %s (%s) leave: %s %s' % (
-                    player_entry[p][2], player_entry[p][1], player_entry[p][4], player_entry[p][-3]))
+                print('vorheriges Team: %s (%s) Verlassen: %s Dauer: %s Tage %s Std %s' % (
+                    player_entry[p][2], player_entry[p][1], player_entry[p][4], player_entry[p][-3][0],
+                    player_entry[p][-3][1], player_entry[p][-4]))
         print("_________________________")
 
 
 if __name__ == '__main__':
-
     # TODO improve ruleinfo
+    print(check_if_switched_team_more_than_once())
     readable_check_if_switched_team_more_than_once()
 
     readable_check_lower_div_join()
