@@ -10,7 +10,27 @@ import scrapProxylistSpys_one
 from user_agents_file import user_agents
 
 
-def scrap_league_and_div_data(link, delay=0):
+def connect_league_and_div(link,proxy):
+    """
+    Connects to 99Damage div page and gets requests-website-object
+    :param link: link to 99Damage div
+    :param proxy: proxy used for the connection
+    :return: return request object of div
+    """
+    headers = {
+        'User-Agent': random.choice(user_agents)}
+    proxies = {
+        'http': 'socks5://' + proxy,
+        'https': 'socks5://' + proxy
+    }
+    logging.warning('proxy: ' + proxy)
+
+    # user: change timeout, if to many proxies refuse (recommended = 2)
+    website = requests.get(link, headers=headers, proxies=proxies, timeout=2)
+    website.raise_for_status()
+    return website  # requests objects needed for bs4
+
+def scrap_league_and_div_data(link):
     '''
     @param link
         provide 99dmg seasonlink e.g 'https://csgo.99damage.de/de/leagues/99dmg/989-saison-10'
@@ -27,8 +47,7 @@ def scrap_league_and_div_data(link, delay=0):
     counter = 0
     # 1.6 estimated proxy timeout 2 sec
     est_runtime_min = round((amount_divs * 1.6) / 60)
-    print('Estimated runtime: %s Minutes (Delay: %ss)' %
-          (est_runtime_min, delay))
+    print('Estimated runtime: %s Minutes' %(est_runtime_min))
     print('Scraping DACH socks5 Proxies from spys.one')
     # scraping proxies from spys.one
     socks5list = scrapProxylistSpys_one.scrape_DACH_D_and_get_only_proxies_list()
@@ -36,20 +55,20 @@ def scrap_league_and_div_data(link, delay=0):
     l_proxy_counter = 0
     for k, v in divlinks_list.items():
         l_proxy_counter += 1
-        # user: change value, for faster or slower proxyswitch, if proxy was fast enough, recommended:20
-        if l_proxy_counter == 20:
-            used_proxy = ''
-            l_proxy_counter = 0
+    # user: change value, for faster or slower proxyswitch, if proxy was fast enough, recommended:20
+    if l_proxy_counter == 20:
+        used_proxy = ''
+    l_proxy_counter = 0
 
-        # passing proxies to scrap methode and getting the new proxieslist (removed slow proxies)
-        teamlinks_list, socks5list, used_proxy = scrap.get_teamlinks_dic_from_group(v['link'], socks5list, used_proxy)
+    # passing proxies to scrap methode and getting the new proxieslist (removed slow proxies)
+    teamlinks_list, socks5list, used_proxy = scrap.get_teamlinks_dic_from_group(v['link'], socks5list, used_proxy)
 
-        counter += 1
-        league_team_data[k].update({'Teams': teamlinks_list})
-        # prints number, divname and used proxy ip without port
-        print('(%s/%s) %s - %s' %
-              (str(counter), str(amount_divs), k, str(used_proxy.split(':')[0])))
-        # time.sleep(delay) #not needed
+    counter += 1
+    league_team_data[k].update({'Teams': teamlinks_list})
+    # prints number, divname and used proxy ip without port
+    print('(%s/%s) %s - %s' %
+          (str(counter), str(amount_divs), k, str(used_proxy.split(':')[0])))
+    # time.sleep(delay) #not needed
 
     # TODO is it? do not change the filename, is needed for add_teamdata_to_data
     # TODO make changeable in gui
@@ -63,7 +82,7 @@ def scrap_league_and_div_data(link, delay=0):
 
 def connect_team(link, proxy):
     """
-    Connects to 99Damage site and gets requests website object
+    Connects to 99Damage team page and gets requests-website-object
     :param link: link to 99Damage team
     :param proxy: proxy used for the connection
     :return: return request object of teampage
@@ -77,14 +96,14 @@ def connect_team(link, proxy):
         'https': 'socks5://' + proxy
     }
     logging.warning('proxy: ' + proxy)
-    
+
     # user: change timeout, if to many proxies refuse (recommended = 2)
     website = requests.get(link, headers=headers, proxies=proxies, timeout=2)
     website.raise_for_status()
     return website  # requests objects needed for bs4
 
 
-def add_teamdata_to_data(delay=10):
+def add_teamdata_to_data():
     '''
     @param delay
         delays the scraper by amount in sec, recommended is 5-10 sec
@@ -111,8 +130,8 @@ def add_teamdata_to_data(delay=10):
     counter = 0
     est_teams = len(teamdata.keys()) * 8
     est_time_min = round((est_teams * 1.3) / 60)
-    print('Estimated Teams: %s  Estimated time: %s Minutes (Delay %ss)' %
-          (str(est_teams), str(est_time_min), str(delay)))
+    print('Estimated Teams: %s  Estimated time: %s Minutes' %
+          (str(est_teams), str(est_time_min)))
     print('Scraping DACH socks5 Proxies from spys.one')
     # scraping proxies from spys.one
     socks5list = scrapProxylistSpys_one.scrape_DACH_D_and_get_only_proxies_list()
