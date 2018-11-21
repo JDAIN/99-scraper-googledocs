@@ -63,13 +63,11 @@ def check_if_switched_team_more_than_once():
                         if len(vss['leave_dates']) > 0:
                             joinleave_player_list.append(
                                 [kss, k, ks, vss['join_dates'][0], vss['leave_dates'][0], v['link'], vs['link'],
-                                 vss['time_in_team'],
-                                 vss['steam_id']])
+                                 vss['time_in_team'], vss['steam_id']])
                         else:
                             joinleave_player_list.append(
                                 [kss, k, ks, vss['join_dates'][0], vss['leave_dates'], v['link'], vs['link'],
-                                 vss['time_in_team'],
-                                 vss['steam_id']])
+                                 vss['time_in_team'], vss['steam_id']])
 
     player_counter = Counter(x[0] for x in joinleave_player_list)
 
@@ -157,10 +155,12 @@ def check_lower_div_join():
                         if len(vss['leave_dates']) > 0:
                             joinleave_player_list.append(
                                 [kss, k, ks, vss['join_dates'][0], vss['leave_dates'][0], v['link'], vs['link'],
+                                 vss['time_in_team'],
                                  vss['steam_id']])
                         else:
                             joinleave_player_list.append(
                                 [kss, k, ks, vss['join_dates'][0], vss['leave_dates'], v['link'], vs['link'],
+                                 vss['time_in_team'],
                                  vss['steam_id']])
 
     player_counter = Counter(x[0] for x in joinleave_player_list)
@@ -213,8 +213,6 @@ def check_lower_div_join():
 
     return ret_list
 
-    # makes timedata object back to strings for readability
-
 
 # needed for colors :)
 class Color:
@@ -231,6 +229,8 @@ class Color:
 
 
 def readable_check_lower_div_join_color():
+    # todo add time
+    # todo broken
     read_dic = check_lower_div_join()
     # print(len(read_dic))
     for player_entry in read_dic:
@@ -264,7 +264,7 @@ def readable_check_lower_div_join_color():
 
 def readable_check_lower_div_join():
     print(
-        '\n\n____________________________________________________________\n\nSpieler, die zu Beginn oder im Laufe einer jeden Saison in einem Team einer höheren Division vertreten waren, sind in einer niedrigeren Division nicht spielberechtigt.\n')
+        '\n\n_________________________\n\nRegel: 4. Zusammensetzung der Teams D. Spielertransfers IV.  \nSpieler, die zu Beginn oder im Laufe einer jeden Saison in einem Team einer höheren Division vertreten waren, sind in einer niedrigeren Division nicht spielberechtigt.\n')
 
     read_dic = check_lower_div_join()
     # print(len(read_dic))
@@ -285,15 +285,18 @@ def readable_check_lower_div_join():
             # if player_entry[0][-2] != '-':
 
             if p == 0 and player_entry[0][-2] != '-':
-                print('aktuelles Team: %s (%s) join: %s %s' % (
-                    player_entry[p][2], player_entry[p][1], player_entry[p][3], player_entry[p][-3]))
+                print('aktuelles Team: %s (%s) Beitritt: %s Dauer: Aktiv %s' % (
+                    player_entry[p][2], player_entry[p][1], player_entry[p][3], player_entry[p][-4]))
             else:
-                print('vorheriges Team: %s (%s) leave: %s %s' % (
-                    player_entry[p][2], player_entry[p][1], player_entry[p][4], player_entry[p][-3]))
+                print('vorheriges Team: %s (%s) Verlassen: %s Dauer: %s Tage %s Std %s' % (
+                    player_entry[p][2], player_entry[p][1], player_entry[p][4], player_entry[p][-3][0],
+                    player_entry[p][-3][1], player_entry[p][-4]))
         print("_________________________")
 
 
 def readable99_check_lower_div_join():
+    # TODO add time
+    # todo broken
     print(
         '\n\n____________________________________________________________\n\nSpieler, die zu Beginn oder im Laufe einer jeden Saison in einem Team einer höheren Division vertreten waren, sind in einer niedrigeren Division nicht spielberechtigt.\n')
 
@@ -320,7 +323,7 @@ def readable99_check_lower_div_join():
 
 
 def readable_check_if_switched_team_more_than_once():
-    print('''Rule: D. I.
+    print('''Regel: 4. Zusammensetzung der Teams D. Spielertransfer I.
         Das Wechseln des Teams während einer laufenden Saison ist nur ein Mal erlaubt.
         Mehrfacher Wechsel führt zur Sperrung des Spielers für die laufende Saison und Playoffs bzw.Relegationen.\n''')
     read_dic = check_if_switched_team_more_than_once()
@@ -353,6 +356,8 @@ def readable_check_if_switched_team_more_than_once():
 
 if __name__ == '__main__':
     # TODO improve ruleinfo
+    print(
+        'Warnung:\n Liste ist nicht zu 100% genau, es sollte nochmal selber überprüft werden, ob es sich wirklich um einen Regelverstoß handelt\n')
     print(check_if_switched_team_more_than_once())
     readable_check_if_switched_team_more_than_once()
 
