@@ -33,13 +33,12 @@ def connect_league_and_div(link, proxy, user_agent):
 
 def scrap_league_and_div_data(link):
     '''
+    creates Dic of all Divisions and Teams and writes Data to py file as dmgdata
     @param link
         provide 99dmg seasonlink e.g 'https://csgo.99damage.de/de/leagues/99dmg/989-saison-10'
     @param delay
         delays the scraper by amount in sec, recommended is 5-10 sec
-        default is 10 sec
-
-    creates Dic of all Divisions and Teams and writes Data to py file as dmgdata
+        default is 10 sec    
     '''
     divlinks_list = scrap.get_divlinks_dic_from_leaguepage(link)
 
@@ -70,9 +69,11 @@ def scrap_league_and_div_data(link):
             except Exception as e:  # must be this broad
                 logging.info(e)
                 socks5list.remove(proxy)
-                logging.info('timeout: %s removed (proxies left: %s)' % (proxy, len(socks5list)))
+                logging.info('timeout: %s removed (proxies left: %s)' %
+                             (proxy, len(socks5list)))
                 # if proxy almost empty get more proxies
-                if len(socks5list) <= 3:  # if used any lower value likelihood of repeated Proxy usage to high
+                # if used any lower value likelihood of repeated Proxy usage to high
+                if len(socks5list) <= 3:
                     socks5list = scrapProxylistSpys_one.scrape_DACH_close_countries_and_get_only_proxies_list()
                     logging.info('Proxylist empty, get new')
                 # logging.info(socks5list)
@@ -95,7 +96,7 @@ def scrap_league_and_div_data(link):
     # file.write('dmgdata = ' + pprint.pformat(data))
 
 
-def connect_team(link, proxy,user_agent):
+def connect_team(link, proxy, user_agent):
     """
     Connects to 99Damage team page and gets requests-website-object
     :param link: link to 99Damage team
@@ -167,15 +168,18 @@ def add_teamdata_to_data():
                     last_proxy_counter = 0
                 while True:
                     try:
-                        players = scrap.get_teamdic_from_teamlink(connect_team(vs['link'], proxy, user_agent))
+                        players = scrap.get_teamdic_from_teamlink(
+                            connect_team(vs['link'], proxy, user_agent))
                         break
                     except Exception as e:  # must be this broad
                         logging.info(e)
                         # remove slow proxy
                         socks5list.remove(proxy)
-                        logging.info('timeout: %s removed (proxies left: %s)' % (proxy, len(socks5list)))
+                        logging.info('timeout: %s removed (proxies left: %s)' % (
+                            proxy, len(socks5list)))
                         # if proxy almost empty get more proxies
-                        if len(socks5list) <= 3:  # if used any lower value likelihood of repeated Proxy usage to high
+                        # if used any lower value likelihood of repeated Proxy usage to high
+                        if len(socks5list) <= 3:
                             socks5list = scrapProxylistSpys_one.scrape_DACH_close_countries_and_get_only_proxies_list()
                             logging.info('Proxylist empty, get new')
                         # logging.info(socks5list)
