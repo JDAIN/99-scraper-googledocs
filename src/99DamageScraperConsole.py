@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     scrap_choice.add_argument('--scrap_league',
                               help="Scraps Div and League data and creates json File (no Playerdata), est Runtime: 8 Min", action="store_true", dest='scrap_league')
-    scrap_choice.add_argument('--add_teams',
+    scrap_choice.add_argument('--add_players',
                               help='Adds Playerdata to scrap_league json (scrap_league must be run first), est Runtime: 38 Min', action="store_true", dest='add_players')
     scrap_choice.add_argument(
         '--scrap_all', help='Scraps Div and League Data first and than adds players to Data, est Runtime: 46 Min', action="store_true", dest='scrap_all')
