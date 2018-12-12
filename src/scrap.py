@@ -23,11 +23,18 @@ def get_divlinks_dic_from_leaguepage(link):
     league_soup = bs4.BeautifulSoup(website.text, features="lxml")
 
     divlinks_dic = {}
-    league_element = league_soup.select('.league_overview_box .groups li')
 
+    #div 1
+    leagueDivOne_element = league_soup.select('.league_overview_box .league_table .title')
+    #[1:] needed bc of \n
+    divlinks_dic[leagueDivOne_element[0].text[1:-1]] = {'link': leagueDivOne_element[0].a['href']}
+
+    #all divs, start div2
+    league_element = league_soup.select('.league_overview_box .groups li')
     for e in league_element:
         try:
-            divlinks_dic[e.text] = {'link': e.a['href']}
+            if 'Relegation' not in e.text:
+                divlinks_dic[e.text] = {'link': e.a['href']}
         except:
             pass
 
@@ -86,7 +93,7 @@ def get_teamlinks_dic_from_group(website):
 
 def get_teamdic_from_teamlink(website):
     """
-    Gets all Player/Teaminfo from a Teamlink
+    Gets all Player/Teaminfo from a Teamlink.
     Action  is mapped to Button 'Add Players'
     :param website: website from requests with status 200
     :return: team_dic in Form
@@ -197,6 +204,3 @@ def get_teamdic_from_teamlink(website):
         return 'no players, team deleted'
     else:
         return team_dic
-
-
-
