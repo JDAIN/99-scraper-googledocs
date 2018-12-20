@@ -18,7 +18,8 @@ def connect_league_and_div(link, proxy, user_agent):
     :return: return request object of div
     """
     headers = {
-        'User-Agent': user_agent}
+        'User-Agent': user_agent
+    }
     proxies = {
         'http': 'socks5://' + proxy,
         'https': 'socks5://' + proxy

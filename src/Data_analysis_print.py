@@ -1,6 +1,7 @@
 ﻿import pprint
 import copy
 import json
+import re
 from datetime import datetime
 from collections import Counter
 
@@ -353,6 +354,21 @@ def readable_check_if_switched_team_more_than_once():
                     player_entry[p][-3][1], player_entry[p][-4]))
         print("_________________________")
 
+def wrong_steam_id():
+    # useful
+    with open('team_player_data.json') as json_data:
+        data = json.load(json_data)
+    for div, divdata in data.items():
+        for team, teamdata in divdata['Teams'].items():
+            if teamdata['Players'] != 'no players, team deleted':
+                for player, playerdata in teamdata['Players'].items():
+                    player_steamid = playerdata['steam_id']
+                    if len(player_steamid) > 1:
+                        try:
+                            reg = re.search(r'^steam_[0|1]:[0|1]:\d{1,9}$', player_steamid).group()
+                        except:
+                            print(r'" {} " | {}   ({} | {} | {})'.format(player_steamid, player, team, div,
+                                                                         teamdata['link']))
 
 if __name__ == '__main__':
     print(
@@ -361,4 +377,6 @@ if __name__ == '__main__':
     readable_check_if_switched_team_more_than_once()
 
     readable_check_lower_div_join()
+    print('\n\n_____________________________________________\n Wrong SteamIDs')
+    wrong_steam_id()
     input('Press Any Key to close...')

@@ -16,7 +16,7 @@ def get_divlinks_dic_from_leaguepage(link):
     #TODO remove generate_user_agent
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:46.0) Gecko/20100101 Firefox/46.0'}
-
+    #TODO: is connection with own ip
     website = requests.get(url, headers=headers)
     website.raise_for_status()
     # get html
