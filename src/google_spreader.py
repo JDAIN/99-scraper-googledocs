@@ -7,36 +7,48 @@ from gspread_formatting import *
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
+
 def auth_google():
-    #returns client
+    # returns client
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
         'client_secret.json',
         ['https://spreadsheets.google.com/feeds'])
     return gspread.authorize(credentials)
 
 
-
-
 def create_wrong_steam_id_sheet(data, client):
     sheet = client.open_by_url('https://docs.google.com/spreadsheets/d/1oRedPa92QILDHDlBwsT1EYUpqn92ZuYY7Foc1Muy4Rk')
-    # worksheet = sheet.get_worksheet(0)
-    # list_of_lists = worksheet.get_all_values()
-    my_list = Data_analysis_sheet.wrong_steam_id_list(data)
     sheet.values_clear(
         'wrong Steam_ids!A2:Z1000'
     )
     sheet.values_update(
         'wrong Steam_ids!A2',
         params={'valueInputOption': 'RAW'},
-        body={'values': my_list},
+        body={'values': Data_analysis_sheet.wrong_steam_id_list(data)},
 
     )
 
+
+def create_switched_team_more_than_once_sheet(client):
+    sheet = client.open_by_url('https://docs.google.com/spreadsheets/d/1oRedPa92QILDHDlBwsT1EYUpqn92ZuYY7Foc1Muy4Rk')
+    # sheet.values_clear(
+    #     'wrong Steam_ids!A2:Z1000'
+    # )
+    list = Data_analysis_sheet.readable_check_if_switched_team_more_than_once()
+    print(len(list))
+    sheet.values_update(
+        'test!A2',
+        params={'valueInputOption': 'RAW'},
+        body={'values': list},
+        # TODO FORMATING
+    )
+
+
 if __name__ == '__main__':
     client = auth_google()
-    #read data
+    # read data
     with open('team_player_data.json', 'r') as file:
         data = json.load(file)
-    #sheet with wrong steamids
-    create_wrong_steam_id_sheet(data, client)
-
+    # sheet with wrong steamids
+    # create_wrong_steam_id_sheet(data, client)
+    create_switched_team_more_than_once_sheet(client)
