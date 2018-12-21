@@ -29,15 +29,29 @@ def create_wrong_steam_id_sheet(data, client):
     )
 
 
-def create_switched_team_more_than_once_sheet(client):
+def create_switched_team_more_than_once_sheet(data, client):
     sheet = client.open_by_url('https://docs.google.com/spreadsheets/d/1oRedPa92QILDHDlBwsT1EYUpqn92ZuYY7Foc1Muy4Rk')
-    # sheet.values_clear(
-    #     'wrong Steam_ids!A2:Z1000'
-    # )
-    list = Data_analysis_sheet.readable_check_if_switched_team_more_than_once()
+    sheet.values_clear(
+         'switched_more_than_once!A2:Z1000'
+     )
+    list = Data_analysis_sheet.readable_check_if_switched_team_more_than_once(data)
     print(len(list))
     sheet.values_update(
-        'test!A2',
+        'switched_more_than_once!A2',  # TODO RENAME
+        params={'valueInputOption': 'RAW'},
+        body={'values': list},
+        # TODO FORMATING
+    )
+
+def create_check_lower_div_join_sheet(data,client):
+    sheet = client.open_by_url('https://docs.google.com/spreadsheets/d/1oRedPa92QILDHDlBwsT1EYUpqn92ZuYY7Foc1Muy4Rk')
+    sheet.values_clear(
+         'lower_div!A2:Z1000'
+    )
+    list = Data_analysis_sheet.readable_check_lower_div_join(data)
+    print(list)
+    sheet.values_update(
+        'lower_div!A2',  # TODO RENAME
         params={'valueInputOption': 'RAW'},
         body={'values': list},
         # TODO FORMATING
@@ -49,6 +63,10 @@ if __name__ == '__main__':
     # read data
     with open('team_player_data.json', 'r') as file:
         data = json.load(file)
+
     # sheet with wrong steamids
-    # create_wrong_steam_id_sheet(data, client)
-    create_switched_team_more_than_once_sheet(client)
+    create_wrong_steam_id_sheet(data, client)
+
+    create_switched_team_more_than_once_sheet(data, client)
+    create_check_lower_div_join_sheet(data, client)
+
