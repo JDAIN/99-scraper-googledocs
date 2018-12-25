@@ -80,6 +80,7 @@ if __name__ == '__main__':
     ch.setLevel(logging.INFO)
     logger.addHandler(fh)
     logger.addHandler(ch)
+    logger.info('__________________________START_____________________')
     logger.info('scraping Data...')
     os.system("99DamageScraperConsole.py --scrap_all")
     logger.info('DONE')
@@ -109,3 +110,4 @@ if __name__ == '__main__':
     create_switched_team_more_than_once_sheet(data, client)
     create_check_lower_div_join_sheet(data, client)
     logger.info('DONE')
+    logger.info('__________________________DONE_____________________')
