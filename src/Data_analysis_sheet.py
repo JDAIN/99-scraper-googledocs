@@ -147,7 +147,8 @@ def readable_check_if_switched_team_more_than_once(data):
             else:
                 not_first_row_player_dic = [''] * 9
                 not_first_row_player_dic[2] = player_entry[p][2]  # team
-                not_first_row_player_dic[3] = first_row_player_dic[3]  # current div
+                # current div
+                not_first_row_player_dic[3] = first_row_player_dic[3]
                 not_first_row_player_dic[4] = player_entry[p][1]  # prev div
                 not_first_row_player_dic[6] = player_entry[p][4]  # leavedata
                 not_first_row_player_dic[7] = str(player_entry[p][-3][0]) + ' Tage ' + str(
@@ -170,9 +171,11 @@ def wrong_steam_id_list(data):
                     player_steamid = playerdata['steam_id']
                     if len(player_steamid) > 1:
                         try:
-                            reg = re.search(r'^steam_[0|1]:[0|1]:\d{1,9}$', player_steamid).group()
+                            reg = re.search(
+                                r'^steam_[0|1]:[0|1]:\d{1,9}$', player_steamid).group()
                         except:
-                            ret_list.append([player, player_steamid, team, div, teamdata['link']])
+                            ret_list.append(
+                                [player, player_steamid, team, div, teamdata['link']])
     return ret_list
 
 
@@ -284,14 +287,14 @@ def readable_check_lower_div_join(data):
         first_row_player_dic = [''] * 9
         # name of player
         first_row_player_dic[0] = str(player_entry[0][0])
-        print('%s' % (str(player_entry[0][0])))
+        #print('%s' % (str(player_entry[0][0])))
         if player_entry[0][-2] != '-':
             # steam_id if active
-            print(player_entry[0][-2])
+            # print(player_entry[0][-2])
             first_row_player_dic[1] = player_entry[0][-2]
         else:
             # player is inactive '-'
-            print('-- (inactive)')
+            #print('-- (inactive)')
             first_row_player_dic[1] = '-- (inactive)'
 
         for p in range(len(player_entry)):
@@ -303,12 +306,13 @@ def readable_check_lower_div_join(data):
                 first_row_player_dic[7] = 'Aktiv'  # Dauer
                 first_row_player_dic[8] = player_entry[p][-4]  # link
                 ret_dic.append(first_row_player_dic)
-                print('aktuelles Team: %s (%s) Beitritt: %s Dauer: Aktiv %s' % (
-                    player_entry[p][2], player_entry[p][1], player_entry[p][3], player_entry[p][-4]))
+                # print('aktuelles Team: %s (%s) Beitritt: %s Dauer: Aktiv %s' % (
+                #    player_entry[p][2], player_entry[p][1], player_entry[p][3], player_entry[p][-4]))
             else:
                 not_first_row_player_dic = [''] * 9
                 not_first_row_player_dic[2] = player_entry[p][2]  # team
-                not_first_row_player_dic[3] = first_row_player_dic[3]  # current div
+                # current div
+                not_first_row_player_dic[3] = first_row_player_dic[3]
                 not_first_row_player_dic[4] = player_entry[p][1]  # prev div
                 not_first_row_player_dic[6] = player_entry[p][4]  # leavedata
                 not_first_row_player_dic[7] = str(player_entry[p][-3][0]) + ' Tage ' + str(
@@ -316,8 +320,8 @@ def readable_check_lower_div_join(data):
                 not_first_row_player_dic[8] = player_entry[p][-4]
                 if first_row_player_dic[1] != '-- (inactive)':
                     ret_dic.append(not_first_row_player_dic)
-                print('vorheriges Team: %s (%s) Verlassen: %s Dauer: %s Tage %s Std %s' % (
-                    player_entry[p][2], player_entry[p][1], player_entry[p][4], player_entry[p][-3][0],
-                    player_entry[p][-3][1], player_entry[p][-4]))
-        print("_________________________")
+        #         print('vorheriges Team: %s (%s) Verlassen: %s Dauer: %s Tage %s Std %s' % (
+        #             player_entry[p][2], player_entry[p][1], player_entry[p][4], player_entry[p][-3][0],
+        #             player_entry[p][-3][1], player_entry[p][-4]))
+        # print("_________________________")
     return ret_dic

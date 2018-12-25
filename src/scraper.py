@@ -1,4 +1,4 @@
-# coding=utf-8
+# encoding=utf-8
 import copy
 import io
 import logging
@@ -85,8 +85,13 @@ def scrap_league_and_div_data(link):
         league_team_data[k].update({'Teams': teamlinks_list})
         counter += 1
         # prints number, divname and used proxy ip without port
-        print('(%s/%s) %s - %s' %
-              (str(counter), str(amount_divs), k, str(proxy.split(':')[0])))
+        try:
+            print('(%s/%s) %s - %s' %
+                  (str(counter), str(amount_divs), k, str(proxy.split(':')[0])))
+        except:
+            print('(%s/%s) %s - %s' %
+                  (str(counter), str(amount_divs), 'div: encoding error', str(proxy.split(':')[0])))
+            pass
 
     # TODO make changeable in gui
     print('Done Scraping....writing to File....')
@@ -190,9 +195,13 @@ def add_teamdata_to_data():
 
                 teamdata[k]['Teams'][ks].update({'Players': players})
             counter += 1
-            print('(%s/%s) %s - %s' %
-                  (str(counter), str(est_teams), ks, str(proxy.split(':')[0])))
-        # after every division write to file,slower can be moved out of for for speed improvment but less stability
+            try:
+                print('(%s/%s) %s - %s' %
+                      (str(counter), str(est_teams), ks, str(proxy.split(':')[0])))
+            except:
+                print('(%s/%s) %s - %s' %
+                      (str(counter), str(est_teams), 'Team: encoding error', str(proxy.split(':')[0])))
+                pass        # after every division write to file,slower can be moved out of for for speed improvment but less stability
         if team_added_boolean:
             with io.open('team_player_data.json', 'w', encoding="utf-8") as file:
                 json.dump(teamdata, file, indent=4)
