@@ -6,11 +6,11 @@ enctab = dict()
 
 
 def scrape_page(url='http://spys.one/en/socks-proxy-list/', soup='n'):
-    '''
+    """
     Scrape given link and create a beautiful soup object.
     - url:  Url to scrape.
     - soup: "n" to not create soup object and only return request response.
-    '''
+    """
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
     data = {
@@ -31,11 +31,11 @@ def scrape_page(url='http://spys.one/en/socks-proxy-list/', soup='n'):
 
 # Taken from https://github.com/xanderdin/scrape.spys.one.proxies :)
 def fill_enctab(arg):
-    '''
+    """
     Fill enctab with values from the script
     with encoding values.
     @arg - script body
-    '''
+    """
     plain_values = [v for v in [x.split('=') for x in arg] if len(v[0]) == 4]
     for v in plain_values:
         enctab[v[0]] = int(v[1])
@@ -63,7 +63,7 @@ def get_proxy_info(proxies_num=5):
     proxy_info = {'ip': [], 'port': [], 'country': []}
 
     counter = 0
-    lol = soup.findAll('td', attrs={"colspan": "1"})
+
     for i, info in enumerate(soup.findAll('td', attrs={"colspan": "1"}), 1):
         info = info.find('font', class_='spy14')
 
@@ -84,9 +84,9 @@ def get_proxy_info(proxies_num=5):
 
 
 def scrape_and_get_only_proxies_list():
-    '''
+    """
     scraps and returns List with proxies in form [ip:port]
-    '''
+    """
     proxieslist = []
     proxies = get_proxy_info()
     for i in range(len(proxies['ip'])):
@@ -99,10 +99,10 @@ def scrape_and_get_only_proxies_list():
 
 
 def scrape_DACH_D_and_get_only_proxies_list():
-    '''
+    """
     scraps only DACH countrys + Denmark
     scraps and returns List with proxies in form [ip:port]
-    '''
+    """
     proxieslist = []
     # TODO filter countries out
     proxies = get_proxy_info()
@@ -118,10 +118,10 @@ def scrape_DACH_D_and_get_only_proxies_list():
 
 
 def scrape_DACH_close_countries_and_get_only_proxies_list():
-    '''
+    """
     scraps only DACH countrys + Denmark
     scraps and returns List with proxies in form [ip:port]
-    '''
+    """
     proxieslist = []
     # TODO filter countries out
     proxies = get_proxy_info()

@@ -1,17 +1,16 @@
-import pprint
 import copy
-import json
+import pprint
 import re
-from datetime import datetime
 from collections import Counter
+from datetime import datetime
 
 
 def teamdic_change_datestrings_to_timedate_objects(team_dic):
-    '''
+    """
     Enter a team_dic changes datetime_strings to Datetime objects
     :param team_dic: teamdic
     :return:
-    '''
+    """
 
     # creates new list and replaces the datestring with an datetimeobject
     date_team_dic = copy.deepcopy(team_dic)
@@ -287,14 +286,14 @@ def readable_check_lower_div_join(data):
         first_row_player_dic = [''] * 9
         # name of player
         first_row_player_dic[0] = str(player_entry[0][0])
-        #print('%s' % (str(player_entry[0][0])))
+        # print('%s' % (str(player_entry[0][0])))
         if player_entry[0][-2] != '-':
             # steam_id if active
             # print(player_entry[0][-2])
             first_row_player_dic[1] = player_entry[0][-2]
         else:
             # player is inactive '-'
-            #print('-- (inactive)')
+            # print('-- (inactive)')
             first_row_player_dic[1] = '-- (inactive)'
 
         for p in range(len(player_entry)):

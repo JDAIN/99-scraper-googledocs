@@ -6,17 +6,17 @@ from datetime import datetime
 
 
 def get_divlinks_dic_from_leaguepage(link):
-    '''
+    """
     Gets run first. Gets all Division links.
     :param link: 99Damage Season link
     :return: Dic with all Divisions and links.
-    '''
+    """
     # connect
     url = link
-    #TODO remove generate_user_agent
+    # TODO remove generate_user_agent
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:46.0) Gecko/20100101 Firefox/46.0'}
-    #TODO: is connection with own ip
+    # TODO: is connection with own ip
     website = requests.get(url, headers=headers)
     website.raise_for_status()
     # get html
@@ -24,12 +24,12 @@ def get_divlinks_dic_from_leaguepage(link):
 
     divlinks_dic = {}
 
-    #div 1
+    # div 1
     leagueDivOne_element = league_soup.select('.league_overview_box .league_table .title')
-    #[1:] needed bc of \n
+    # [1:] needed bc of \n
     divlinks_dic[leagueDivOne_element[0].text[1:-1]] = {'link': leagueDivOne_element[0].a['href']}
 
-    #all divs, start div2
+    # all divs, start div2
     league_element = league_soup.select('.league_overview_box .groups li')
     for e in league_element:
         try:
@@ -42,11 +42,11 @@ def get_divlinks_dic_from_leaguepage(link):
 
 
 def teamdic_change_datestrings_to_timedate_objects(dic):
-    '''
+    """
     Changes in a Teamdic the string Date to Datetime obejects for comparision
     :param dic: only a Teamdic
     :return: Teamdic with Datetime obejects
-    '''
+    """
     # creates new list and replaces the datestring with an datetimeobject
     date_team_dic = copy.deepcopy(dic)
 
@@ -67,14 +67,12 @@ def teamdic_change_datestrings_to_timedate_objects(dic):
 
 
 def get_teamlinks_dic_from_group(website):
-    '''
+    """
     Gets all Teamlinks from a Group.
     Action  is mapped to Button 'Scrap League'
-    :param grouplink: dic of links from Divs/Groups
-    :param proxy_list: proxy list for the request
-    :param l_proxy last used proxy, which worked
+    :param website: only the file.
     :return: dic with added Teams to Groups
-    '''
+    """
     # get html
     group_soup = bs4.BeautifulSoup(website.text, features="lxml")
 
@@ -165,15 +163,15 @@ def get_teamdic_from_teamlink(website):
 
         else:
             # gets last join and leave dates, compares
-            try:#exception if a Player was in a Team but never joined #thx 99
+            try:  # exception if a Player was in a Team but never joined #thx 99
                 last_join_date = datetime_team_dic[key]['join_dates'][0]
             except:
                 break
             last_leave_date = datetime_team_dic[key]['leave_dates'][0]
             time_team = last_leave_date - last_join_date
-            #days, hours, minutes
-            team_dic[key]['time_in_team'] = (time_team.days, time_team.seconds//3600, (time_team.seconds//60)%60)
-        #checks for switch midseason
+            # days, hours, minutes
+            team_dic[key]['time_in_team'] = (time_team.days, time_team.seconds // 3600, (time_team.seconds // 60) % 60)
+        # checks for switch midseason
         for date in datetime_team_dic[key]['join_dates']:
             if date > dmgseasonstart_datetime:
                 team_dic[key]['join_afterSeasonStart'] = True

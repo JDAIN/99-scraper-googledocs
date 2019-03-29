@@ -13,6 +13,7 @@ from user_agents_file import user_agents
 def connect_league_and_div(link, proxy, user_agent):
     """
     Connects to 99Damage div page and gets requests-website-object
+    :param user_agent:
     :param link: link to 99Damage div
     :param proxy: proxy used for the connection
     :return: return request object of div
@@ -33,14 +34,11 @@ def connect_league_and_div(link, proxy, user_agent):
 
 
 def scrap_league_and_div_data(link):
-    '''
+    """
     creates Dic of all Divisions and Teams and writes Data to py file as dmgdata
     @param link
         provide 99dmg seasonlink e.g 'https://csgo.99damage.de/de/leagues/99dmg/989-saison-10'
-    @param delay
-        delays the scraper by amount in sec, recommended is 5-10 sec
-        default is 10 sec    
-    '''
+    """
     divlinks_list = scrap.get_divlinks_dic_from_leaguepage(link)
 
     league_team_data = copy.deepcopy(divlinks_list)
@@ -48,7 +46,7 @@ def scrap_league_and_div_data(link):
     counter = 0
     # 1.6 estimated proxy timeout 2 sec
     est_runtime_min = round((amount_divs * 1.6) / 60)
-    print('Estimated runtime: %s Minutes' % (est_runtime_min))
+    print('Estimated runtime: %s Minutes' % est_runtime_min)
     print('Scraping DACH socks5 Proxies from spys.one')
     # scraping proxies from spys.one
     socks5list = scrapProxylistSpys_one.scrape_DACH_D_and_get_only_proxies_list()
@@ -126,12 +124,12 @@ def connect_team(link, proxy, user_agent):
 
 
 def add_teamdata_to_data():
-    '''
+    """
     @param delay
         delays the scraper by amount in sec, recommended is 5-10 sec
         default: 10 sec
     NEEDS dicfile from scrap_league_and_div_data()
-    '''
+    """
     try:
         # TODO if name changed in gui change here as well
         with open('teamdata.json') as json_data:

@@ -1,15 +1,13 @@
-import re
-import Data_analysis_sheet
-from collections import Counter
 import json
-from operator import itemgetter
-from gspread_formatting import *
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-import datetime
+import logging
 import os
 import time
-import logging
+
+import gspread
+from gspread_formatting import *
+from oauth2client.service_account import ServiceAccountCredentials
+
+import Data_analysis_sheet
 
 
 def auth_google():
@@ -40,13 +38,13 @@ def create_switched_team_more_than_once_sheet(data, client):
     sheet.values_clear(
         'switched_more_than_once!A2:Z1000'
     )
-    list = Data_analysis_sheet.readable_check_if_switched_team_more_than_once(
+    switch_list = Data_analysis_sheet.readable_check_if_switched_team_more_than_once(
         data)
 
     sheet.values_update(
         'switched_more_than_once!A2',  # TODO RENAME
         params={'valueInputOption': 'RAW'},
-        body={'values': list},
+        body={'values': switch_list},
         # TODO FORMATING
     )
 
@@ -57,12 +55,12 @@ def create_check_lower_div_join_sheet(data, client):
     sheet.values_clear(
         'lower_div!A2:Z1000'
     )
-    list = Data_analysis_sheet.readable_check_lower_div_join(data)
+    lowerdiv_list = Data_analysis_sheet.readable_check_lower_div_join(data)
 
     sheet.values_update(
         'lower_div!A2',  # TODO RENAME
         params={'valueInputOption': 'RAW'},
-        body={'values': list},
+        body={'values': lowerdiv_list},
         # TODO FORMATING
     )
 
