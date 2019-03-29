@@ -170,8 +170,10 @@ def wrong_steam_id_list(data):
                     player_steamid = playerdata['steam_id']
                     if len(player_steamid) > 1:
                         try:
+                            # added strip so it removes any leading and ending whitespaces
+                            # TODO check for other errors bc of this
                             reg = re.search(
-                                r'^steam_[0|1]:[0|1]:\d{1,9}$', player_steamid).group()
+                                r'^steam_[0|1]:[0|1]:\d{1,9}$', player_steamid.strip()).group()
                         except:
                             ret_list.append(
                                 [player, player_steamid, team, div, teamdata['link']])
