@@ -3,4 +3,4 @@ GOOGLE_DOCS_LINK = 'https://docs.google.com/spreadsheets/d/1oRedPa92QILDHDlBwsT1
 
 # IMPORTANT TODO change for next season
 SEASON_START_DATE_STRING = '01.03.2019 18:00 +0100'  # will be interpreted as '%d.%m.%Y %H:%M %z'
-SEASON_LEAGUE_LINK = 'https://csgo.99damage.de/de/leagues/99dmg/989-saison-10'
+SEASON_LEAGUE_LINK = 'https://csgo.99damage.de/de/leagues/99dmg/1236-saison-11'
