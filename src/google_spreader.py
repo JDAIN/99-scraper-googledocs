@@ -3,24 +3,23 @@ import logging
 import os
 import time
 
+import CONFIG
 import gspread
-from gspread_formatting import *
+import gspread_formatting
 from oauth2client.service_account import ServiceAccountCredentials
-
 import Data_analysis_sheet
 
 
 def auth_google():
     # returns client
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
-        'client_secret.json',
+        CONFIG.GOOGLE_CLIENT_SECRET_FILENAME,
         ['https://spreadsheets.google.com/feeds'])
     return gspread.authorize(credentials)
 
 
 def create_wrong_steam_id_sheet(data, client):
-    sheet = client.open_by_url(
-        'https://docs.google.com/spreadsheets/d/1oRedPa92QILDHDlBwsT1EYUpqn92ZuYY7Foc1Muy4Rk')
+    sheet = client.open_by_url(CONFIG.GOOGLE_DOCS_LINK)
     sheet.values_clear(
         'wrong Steam_ids!A2:Z1000'
     )
@@ -33,8 +32,7 @@ def create_wrong_steam_id_sheet(data, client):
 
 
 def create_switched_team_more_than_once_sheet(data, client):
-    sheet = client.open_by_url(
-        'https://docs.google.com/spreadsheets/d/1oRedPa92QILDHDlBwsT1EYUpqn92ZuYY7Foc1Muy4Rk')
+    sheet = client.open_by_url(CONFIG.GOOGLE_DOCS_LINK)
     sheet.values_clear(
         'switched_more_than_once!A2:Z1000'
     )
@@ -50,8 +48,7 @@ def create_switched_team_more_than_once_sheet(data, client):
 
 
 def create_check_lower_div_join_sheet(data, client):
-    sheet = client.open_by_url(
-        'https://docs.google.com/spreadsheets/d/1oRedPa92QILDHDlBwsT1EYUpqn92ZuYY7Foc1Muy4Rk')
+    sheet = client.open_by_url(CONFIG.GOOGLE_DOCS_LINK)
     sheet.values_clear(
         'lower_div!A2:Z1000'
     )
@@ -63,6 +60,7 @@ def create_check_lower_div_join_sheet(data, client):
         body={'values': lowerdiv_list},
         # TODO FORMATING
     )
+
 
 
 if __name__ == '__main__':

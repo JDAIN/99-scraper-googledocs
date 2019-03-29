@@ -1,4 +1,4 @@
-user_agents = ['Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0',
+user_agents = {'Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0',
                'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2645.11 Safari/537.36',
                'Mozilla/5.0 (X11; Linux x86_64; rv:48.0) Gecko/20100101 Firefox/48.0',
                'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Win64; x64; Trident/6.0)',
@@ -147,5 +147,5 @@ user_agents = ['Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:47.0) Gecko/20100101
                'Mozilla/5.0 (Android 4.4.2; Mobile; rv:46.0) Gecko/46.0 Firefox/46.0',
                'Mozilla/5.0 (Android 5.0.2; Mobile; rv:46.0) Gecko/46.0 Firefox/46.0',
                'Mozilla/5.0 (Linux; Android 4.4.2; HTC Desire EYE Build/MMB29M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2645.41 Mobile Safari/537.36',
-               'Mozilla/5.0 (Android 4.4.2; Mobile; rv:48.0) Gecko/48.0 Firefox/48.0']
+               'Mozilla/5.0 (Android 4.4.2; Mobile; rv:48.0) Gecko/48.0 Firefox/48.0'}
 

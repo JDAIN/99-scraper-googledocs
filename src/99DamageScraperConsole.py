@@ -1,6 +1,8 @@
 import argparse
 import sys
 import threading
+
+import CONFIG
 import scraper
 
 import time
@@ -26,9 +28,8 @@ if __name__ == '__main__':
 
     if args.scrap_league:
         print('League Scraper started...')
-        # todo remove hardcoded leaguelink
         league_scrap_thread = threading.Thread(target=scraper.scrap_league_and_div_data, args=[
-                                               'https://csgo.99damage.de/de/leagues/99dmg/989-saison-10', ], name='League Scrap', daemon=True)
+                                               CONFIG.SEASON_LEAGUE_LINK, ], name='League Scrap', daemon=True)
         league_scrap_thread.start()
         # TODO cant be interrupted
         league_scrap_thread.join()
@@ -43,9 +44,8 @@ if __name__ == '__main__':
     if args.scrap_all:
         print('Scrap All (League and Players) started...')
         print('League Scraper started...')
-        # todo remove hardcoded url
         league_scrap_thread = threading.Thread(target=scraper.scrap_league_and_div_data, args=[
-                                               'https://csgo.99damage.de/de/leagues/99dmg/989-saison-10', ], name='League Scrap', daemon=True)
+                                               CONFIG.SEASON_LEAGUE_LINK, ], name='League Scrap', daemon=True)
         league_scrap_thread.start()
         # TODO cant be interrupted
         league_scrap_thread.join()

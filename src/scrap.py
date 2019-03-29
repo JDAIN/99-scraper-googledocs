@@ -3,6 +3,7 @@ import requests
 import bs4
 import copy
 from datetime import datetime
+import CONFIG
 
 
 def get_divlinks_dic_from_leaguepage(link):
@@ -102,9 +103,7 @@ def get_teamdic_from_teamlink(website):
     # 99dmg season 10 started at 28. September 2018 (18: 00 Uhr)
     # use as input               28.09.2018 18:00 +0200
 
-    # IMPORTANT TODO change for next season
-    dmgseasonstart_datetime = datetime.strptime(
-        '01.03.2019 18:00 +0100', '%d.%m.%Y %H:%M %z')
+    dmgseasonstart_datetime = datetime.strptime(CONFIG.SEASON_START_DATE_STRING, '%d.%m.%Y %H:%M %z')
     # get html
     team_soup = bs4.BeautifulSoup(website.text, features="lxml")
     # {'steam_id': player_steamid, 'join_dates': [], 'leave_dates': [], 'time_in_team': '', 'join_afterSeasonStart': '-', 'leave_afterSeasonStart': '-'}
