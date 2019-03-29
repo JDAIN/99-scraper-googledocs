@@ -103,6 +103,7 @@ def scrap_league_and_div_data(link):
 def connect_team(link, proxy, user_agent):
     """
     Connects to 99Damage team page and gets requests-website-object
+    :param user_agent: browser user_agent
     :param link: link to 99Damage team
     :param proxy: proxy used for the connection
     :return: return request object of teampage
@@ -125,9 +126,6 @@ def connect_team(link, proxy, user_agent):
 
 def add_teamdata_to_data():
     """
-    @param delay
-        delays the scraper by amount in sec, recommended is 5-10 sec
-        default: 10 sec
     NEEDS dicfile from scrap_league_and_div_data()
     """
     try:

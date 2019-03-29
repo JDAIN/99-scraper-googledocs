@@ -5,7 +5,7 @@ import time
 
 import CONFIG
 import gspread
-import gspread_formatting
+# import gspread_formatting # module is broken atm, use if fixed
 from oauth2client.service_account import ServiceAccountCredentials
 import Data_analysis_sheet
 
@@ -60,7 +60,6 @@ def create_check_lower_div_join_sheet(data, client):
         body={'values': lowerdiv_list},
         # TODO FORMATING
     )
-
 
 
 if __name__ == '__main__':
