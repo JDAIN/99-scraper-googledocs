@@ -1,7 +1,9 @@
 # 99Damage-scraper-private
-Webscraper Gui for 99Damage uses Socks5 Proxies for speed improvements. 
+Scrapes 99Damage site with socks5 proxies for speed improvements,runs Data analysis (checks for rulebreakers) and posts it to a specified Google Spreadsheet.
 
 client_secret.json is needed (google login)
+
+Settings: CONFIG.py
 
 server usage: start.sh with cron
 
@@ -13,5 +15,5 @@ scraplog: nohup.out
 
 **Use at your own Risk**
 
-Data is used for banned Players analysis
+Data is used for banned Players analysis and deleted after it is done.
 
