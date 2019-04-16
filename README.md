@@ -1,5 +1,5 @@
 # 99Damage-scraper-private
-Scrapes 99Damage site with socks5 proxies for speed improvements,runs Data analysis (checks for rulebreakers) and posts it to a specified Google Spreadsheet.
+Scrapes 99Damage site with socks5 proxies for speed improvements, runs Data analysis (checks for rulebreakers) and posts it to a specified Google Spreadsheet.
 
 client_secret.json is needed (google login)
 
